@@ -12,7 +12,7 @@ import { FaArrowDown, FaArrowUp, FaShare } from 'react-icons/fa'
 import useWindowSize from '../../components/getWindowSize.js';
 import { supabase } from '../../components/Supabase.js';
 
-export default function Post({ post }) {
+export function Post({ post }) {
   const { width, height } = useWindowSize()
 
   const data = JSON.parse(post)
@@ -84,5 +84,7 @@ export async function getServerSideProps(context) {
         'public, s-maxage=10000, stale-while-revalidate=10000'
     )
     
-    return { props: { post } };
+    return { props: { post: post } };
 }
+
+export default Post;
