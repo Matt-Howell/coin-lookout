@@ -68,12 +68,12 @@ export default function Post({ post }) {
 export async function getServerSideProps(context) {
     const { id } = context.query;
 
-    let { data: posts, error } = await supabase
+    let { data, error } = await supabase
     .from('posts')
     .select('*')
     .eq("slug", String(id))
 
-    let post = JSON.stringify(posts[0])
+    let post = JSON.stringify(data[0])
 
     context.res.setHeader(
         'Cache-Control',
