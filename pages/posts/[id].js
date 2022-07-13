@@ -68,6 +68,10 @@ export default function Post({ post }) {
 export async function getServerSideProps(context) {
     const { id } = context.query;
 
+    if (!id) {
+        return;
+    }
+
     let { data, error } = await supabase
     .from('posts')
     .select('*')
