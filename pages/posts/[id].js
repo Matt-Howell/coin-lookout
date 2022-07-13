@@ -32,16 +32,16 @@ export default function Post({ post }) {
             <div className="col-xl-8 col-12 pr-xl-2 pr-0">
             <Box backgroundColor={'hsla(240,4%,46%,.2)'} borderRadius='7.5px' border='1px solid hsla(240,4%,46%,.3)'>
                 <Box width='100%!important'>
-                    <Image height={'100%'} maxH={'300px'} borderRadius='7.5px 7.5px 0px 0px' objectFit='cover' width='100%' src={post.image_url} alt={"Farm The Dip"} className="themeImage" />
+                    <Image height={'100%'} maxH={'300px'} borderRadius='7.5px 7.5px 0px 0px' objectFit='cover' width='100%' src={post["image_url"]} alt={"Farm The Dip"} className="themeImage" />
                 </Box>
                 <Box className='d-flex flex-md-row flex-column mb-2'>
                     <Box p={4}>
                         <Heading mt={2} fontWeight={600} lineHeight={'150%'} fontSize='3xl'>
-                            {post.title}
+                            {post["title"]}
                         </Heading>
-                        <Text mt={2} opacity='0.75' display={'flex'} alignItems={'center'} fontSize={'md'} pb={4} borderBottom={'1px solid hsla(240,4%,46%,.3)'}><Text as="span" mr={2}>24th June, 2022</Text>&bull;<Badge fontSize={'md'} fontWeight={500} letterSpacing={'0.5px'} px={2} py={0} ml={2} borderRadius={'5px'} colorScheme={'yellow'}>BSC</Badge></Text>
+                        <Text mt={2} opacity='0.75' display={'flex'} alignItems={'center'} fontSize={'md'} pb={4} borderBottom={'1px solid hsla(240,4%,46%,.3)'}><Text as="span" mr={2}>24th June, 2022</Text>&bull;<Badge fontSize={'md'} fontWeight={500} letterSpacing={'0.5px'} px={2} py={0} ml={2} borderRadius={'5px'} colorScheme={'yellow'}>{post["chain"]}</Badge></Text>
                         <Text mt={4} whiteSpace='pre-wrap' color={'inherit'} lineHeight={'175%'} fontSize={'lg'}>
-                            {post.body}
+                            {post["body"]}
                         </Text>
                         </Box>
                 </Box>
@@ -77,7 +77,7 @@ export async function getServerSideProps(context) {
     .select('*')
     .eq("slug", String(id))
     
-    let post = posts[0]
+    let post = posts[0] || posts;
     
     return { props: { post } };
 }
