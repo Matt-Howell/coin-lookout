@@ -15,7 +15,7 @@ import { supabase } from '../../components/Supabase.js';
 export default function Post({ post }) {
   const { width, height } = useWindowSize()
 
-  console.log(post)
+  const data = JSON.parse(post)
   return (
     <div>
       <Head>
@@ -33,14 +33,16 @@ export default function Post({ post }) {
             <div className="col-xl-8 col-12 pr-xl-2 pr-0">
             <Box backgroundColor={'hsla(240,4%,46%,.2)'} borderRadius='7.5px' border='1px solid hsla(240,4%,46%,.3)'>
                 <Box width='100%!important'>
-                    <Image height={'100%'} maxH={'300px'} borderRadius='7.5px 7.5px 0px 0px' objectFit='cover' width='100%' alt={"Farm The Dip"} className="themeImage" />
+                    <Image height={'100%'} maxH={'300px'} borderRadius='7.5px 7.5px 0px 0px' objectFit='cover' width='100%' src={data["image_url"]} alt={"Farm The Dip"} className="themeImage" />
                 </Box>
                 <Box className='d-flex flex-md-row flex-column mb-2'>
                     <Box p={4}>
                         <Heading mt={2} fontWeight={600} lineHeight={'150%'} fontSize='3xl'>
+                            {data["title"]}
                         </Heading>
-                        <Text mt={2} opacity='0.75' display={'flex'} alignItems={'center'} fontSize={'md'} pb={4} borderBottom={'1px solid hsla(240,4%,46%,.3)'}><Text as="span" mr={2}>24th June, 2022</Text>&bull;<Badge fontSize={'md'} fontWeight={500} letterSpacing={'0.5px'} px={2} py={0} ml={2} borderRadius={'5px'} colorScheme={'yellow'}>BSC</Badge></Text>
+                        <Text mt={2} opacity='0.75' display={'flex'} alignItems={'center'} fontSize={'md'} pb={4} borderBottom={'1px solid hsla(240,4%,46%,.3)'}><Text as="span" mr={2}>24th June, 2022</Text>&bull;<Badge fontSize={'md'} fontWeight={500} letterSpacing={'0.5px'} px={2} py={0} ml={2} borderRadius={'5px'} colorScheme={'yellow'}>{data["chain"]}</Badge></Text>
                         <Text mt={4} whiteSpace='pre-wrap' color={'inherit'} lineHeight={'175%'} fontSize={'lg'}>
+                        {data["body"]}
                         </Text>
                         </Box>
                 </Box>
@@ -64,19 +66,19 @@ export default function Post({ post }) {
 }
 
 export async function getServerSideProps(context) {
-    context.res.setHeader(
-        'Cache-Control',
-        'public, s-maxage=10000, stale-while-revalidate=10000'
-    )
-
     const { id } = context.query;
 
     let { data: posts, error } = await supabase
     .from('posts')
     .select('*')
     .eq("slug", String(id))
-    
-    let post = posts;
+
+    let post = JSON.stringify(posts[0])
+
+    context.res.setHeader(
+        'Cache-Control',
+        'public, s-maxage=10000, stale-while-revalidate=10000'
+    )
     
     return { props: { post } };
 }
