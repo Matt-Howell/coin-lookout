@@ -23,7 +23,7 @@ import {
             <Box display={'flex'} flexDirection='column'>
                 <Text mb={1} opacity='0.6' fontSize={'sm'}>{props.date}</Text>
                 <Heading display={'flex'} justifyContent='start' alignItems={'center'} fontSize={'xl'} lineHeight='1.5' fontWeight={500}>
-                    <Link className='remainHover' href='/posts/8894'>{props.title}</Link> <Badge fontSize={'md'} fontWeight={500} letterSpacing={'0.5px'} ml={2} colorScheme={props.chain == "BSC" ? 'yellow' : props.chain == "ETH" ? 'blue' : props.chain == "AVAX" ? 'red' : props.chain == "Polygon" ? 'purple' : null}>{props.chain}</Badge>
+                    <Link className='remainHover' href={`/posts/${props.slug}`}>{props.title}</Link> <Badge fontSize={'md'} fontWeight={500} letterSpacing={'0.5px'} ml={2} colorScheme={props.chain == "BSC" ? 'yellow' : props.chain == "ETH" ? 'blue' : props.chain == "AVAX" ? 'red' : props.chain == "Polygon" ? 'purple' : null}>{props.chain}</Badge>
                 </Heading>
                 <Text mt={2} opacity='0.8' fontSize={'md'}>{props.description}</Text>
                 <Box mt={4} className="d-flex flex-row">

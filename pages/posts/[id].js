@@ -42,7 +42,7 @@ export function Post({ post }) {
                         </Heading>
                         <Text mt={2} opacity='0.75' display={'flex'} alignItems={'center'} fontSize={'md'} pb={4} borderBottom={'1px solid hsla(240,4%,46%,.3)'}><Text as="span" mr={2}>24th June, 2022</Text>&bull;<Badge fontSize={'md'} fontWeight={500} letterSpacing={'0.5px'} px={2} py={0} ml={2} borderRadius={'5px'} colorScheme={'yellow'}>{data["chain"]}</Badge></Text>
                         <Text mt={4} whiteSpace='pre-wrap' color={'inherit'} lineHeight={'175%'} fontSize={'lg'}>
-                        {data["body"]}
+                            {data["body"]}
                         </Text>
                         </Box>
                 </Box>
@@ -84,7 +84,7 @@ export async function getServerSideProps(context) {
         'public, s-maxage=10000, stale-while-revalidate=10000'
     )
     
-    return { props: { post: post } };
+    return { props: { post } };
 }
 
 export default Post;
