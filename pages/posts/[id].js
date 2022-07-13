@@ -15,6 +15,7 @@ import { supabase } from '../../components/Supabase.js';
 export default function Post({ post }) {
   const { width, height } = useWindowSize()
 
+  console.log(post)
   return (
     <div>
       <Head>
