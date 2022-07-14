@@ -75,6 +75,12 @@ body::-webkit-scrollbar{height:0px;width:0px;}
   border:0!important;
 }
 
+.noHover:hover, .noHover:focus-visible, .noHover:focus{
+  box-shadow:none!important;
+  outline:0!important;
+  border:0!important;
+}
+
 .remainHover:hover{
   color: inherit!important;
 }

@@ -12,25 +12,30 @@ import {
   useColorModeValue,
   useDisclosure,
   CloseButton,
+  useToast,
   VStack,
   Button,
   useColorMode,
-  SimpleGrid
+  SimpleGrid,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuDivider,
+  Text
 } from "@chakra-ui/react";
 import { useViewportScroll } from "framer-motion";
-import { IoIosArrowDown } from "react-icons/io";
 import { AiOutlineMenu } from "react-icons/ai";
-import { FaFire, FaPlusCircle, FaTelegram, FaTwitter, FaEnvelope } from "react-icons/fa";
-import { GiConsoleController } from 'react-icons/gi';
-import { BiMovie } from 'react-icons/bi';
-import { IoMdPlanet } from 'react-icons/io'
-import { RiMovie2Line } from 'react-icons/ri'
+import { FaPlusCircle, FaTelegram, FaTwitter, FaEnvelope, FaUserAlt } from "react-icons/fa";
+import { supabase } from "./Supabase.js";
+import { useRouter } from "next/router";
 
 export default function Header() {
   const { toggleColorMode: toggleMode } = useColorMode();
   const text = useColorModeValue("dark", "light");
   const bg = useColorModeValue("#fafafa", "gray.800");
   const ref = React.useRef();
+  const toast = useToast()
   const [y, setY] = React.useState(0);
   const { height = 0 } = ref.current ? ref.current.getBoundingClientRect() : {};
 
@@ -40,6 +45,30 @@ export default function Header() {
   }, [scrollY]);
   const cl = useColorModeValue("gray.800", "#fafafa");
   const mobileNav = useDisclosure();
+
+  const router = useRouter();
+  const logOutSB = async () => {
+    let { error } = await supabase.auth.signOut()
+    if (error) {
+      toast({
+        title: "Whoops!",
+        description: "An unknown error has occurred. Please try again in a few minutes.",
+        status: "error",
+        position: "top-end",
+        duration: 7500,
+        isClosable: true,
+      })
+    } else {
+      toast({
+        title: "Signed Out!",
+        description: "You have successfully signed out from your account.",
+        status: "success",
+        position: "top-end",
+        duration: 7500,
+        isClosable: true,
+      })
+    }
+  }
 
   const Section = (props) => {
     const ic = useColorModeValue("brand.600", "brand.50");
@@ -80,57 +109,6 @@ export default function Header() {
     );
   };
 
-  const Categories = (props) => {
-    return (
-      <React.Fragment>
-        <SimpleGrid
-          columns={props.h ? { base: 1, md: 3, lg: 5 } : 1}
-          pos="relative"
-          gap={{ base: 6, sm: 8 }}
-          px={5}
-          py={6}
-          p={{ sm: 8 }}
-        >
-          <Link href={'/anime'}><Section
-            title="Anime"
-            icon={
-                <RiMovie2Line size={25} />
-            }
-          >
-            Find all our Anime Better Discord themes.
-          </Section></Link>
-
-          <Link href={'/marvel'}><Section
-            title="Marvel"
-            icon={
-                <BiMovie size={25} />
-            }
-          >
-            Check out all of our Marvel Better Discord themes.
-          </Section></Link>
-
-          <Link href={'/gaming'}><Section
-            title="Gaming"
-            icon={
-                <GiConsoleController size={25} />
-            }
-          >
-            View our gaming Better Discord themes right here.
-          </Section></Link>
-
-          <Link href={'/space'}><Section
-            title="Space"
-            icon={
-                <IoMdPlanet size={25} />
-            }
-          >
-            Give our space Better Discord themes a visit.
-          </Section></Link>
-        </SimpleGrid>
-      </React.Fragment>
-    );
-  };
-
   const MobileNavContent = (
     <VStack
       position={"absolute"}
@@ -154,38 +132,22 @@ export default function Header() {
         justifySelf="self-start"
         onClick={mobileNav.onClose}
       />
-      <Popover>
-       <PopoverTrigger><Button
-        w="full"
-        variant="ghost"
-        rightIcon={<IoIosArrowDown />}
-      >
-        Categories
-      </Button></PopoverTrigger>
-      <PopoverContent
-        w="100vw"
-        maxW="md"
-        _focus={{ boxShadow: "md" }}
-        >
-            <Categories />
-        </PopoverContent>
-    </Popover>
-      <Link href={'/themes/'}><Button
-        w="full"
-        variant="ghost"
-        
-        leftIcon={<FaFire />}
-      >
-        Themes
-      </Button></Link>
-      <Link href={'/plugins/'}><Button
+      <><Link href={'/#Post'}><Button
         w="full"
         variant="ghost"
         
         leftIcon={<FaPlusCircle />}
       >
-        Plugins
+        Create Post
       </Button></Link>
+      <Link href={'/contact'}><Button
+        w="full"
+        variant="ghost"
+        
+        leftIcon={<FaEnvelope />}
+      >
+        Contact Us
+      </Button></Link></>
     </VStack>
   );
   return (
@@ -229,22 +191,35 @@ export default function Header() {
                 variant="ghost"
                 color="current"
                 ml={{ base: "0", md: "3" }}
-                onClick={toggleMode}
                 icon={<FaTelegram />}
               />
               <IconButton
                 size="md"
                 fontSize="lg"
-                aria-label={`Switch to ${text} mode`}
                 variant="ghost"
                 color="current"
                 ml={{ base: "0", md: "3" }}
-                onClick={toggleMode}
                 icon={<FaTwitter />}
               />
-            <Button onClick={() => { window.location.href = "/#Post" }} display={{ base: "none", md: "flex" }} ml={{ base: "0", md: "4" }} leftIcon={<FaPlusCircle />} borderRadius={'50px'} colorScheme='blue'>
-              Create Post
-            </Button> 
+              <><Menu><MenuButton
+                as={IconButton}
+                id="btn1"
+                size="md"
+                fontSize="md"
+                justifyContent={'center'}
+                display='flex'
+                variant="ghost"
+                color="current"
+                icon={<FaUserAlt />}
+                ml={{ base: "0", md: "3" }}
+              ></MenuButton><MenuList>
+              {supabase.auth.user() ? <><Text fontSize={"medium"} className="d-flex align-items-center justify-content-center" p={4}>{String(supabase.auth.user().email)}</Text> 
+              <MenuDivider /></> : null}
+              {supabase.auth.user() ? <MenuItem className="noHover"><Button variant="ghost" w="full" onClick={logOutSB}>Sign Out</Button></MenuItem> : <MenuItem className="noHover"><Button variant="ghost" w="full" onClick={() => router.push("/sign-in")}>Sign In</Button></MenuItem>}
+              </MenuList></Menu></>
+              <Button id="btn2" onClick={() => { router.push("/#Post") }} display={{ base: "none", md: "flex" }} ml={{ base: "0", md: "4" }} leftIcon={<FaPlusCircle />} borderRadius={'50px'} colorScheme='blue'>
+                Create Post
+              </Button>
               <IconButton
                 display={{ base: "flex", md: "none" }}
                 aria-label="Open menu"

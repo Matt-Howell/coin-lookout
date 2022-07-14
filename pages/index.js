@@ -41,6 +41,7 @@ import { FaArrowCircleUp, FaCheckCircle, FaClock, FaEye, FaFileUpload, FaFilter,
 import { useRef, useState, useEffect } from 'react'
 import useWindowSize from '../components/getWindowSize.js'
 import Confetti from 'react-confetti'
+import Footer from '../components/Footer.jsx'
 import PostCard from '../components/Card.jsx'
 import { supabase } from '../components/Supabase.js'
 
@@ -167,8 +168,8 @@ export default function Home() {
           onConfettiComplete={() => setConfetti(false)}
           height={height}
         /> : null}
-      <main className='container px-3 d-flex flex-column justify-content-center align-items-center pt-5'>
-        <Box width={728} height={90} display='flex' justifyContent={'center'} alignItems='center' border={'1px solid hsla(240,4%,46%,.3)'}>Ad</Box>
+      <main className='container px-3 d-flex flex-column justify-content-center align-items-center py-5'>
+        <Box width={320} height={50} display='flex' justifyContent={'center'} alignItems='center' border={'1px solid hsla(240,4%,46%,.3)'}>Ad</Box>
         <div className='d-flex flex-xl-row flex-column justify-content-xl-between mt-4 pt-5 w-100'>
           <div className='col-xl-4 col-12 pr-xl-3 pr-0 mb-3 mb-xl-0'>
             <Box p={6} w='100%' borderRadius='7.5px' border={'1px solid hsla(240,4%,46%,.3)'} backgroundColor={'hsla(240,4%,46%,.2)'}>
@@ -347,9 +348,10 @@ export default function Home() {
             </Modal>
           </div>
         <div className="mt-4 w-100">
-          {loading ? <div className="d-flex w-100 justify-content-center mt-4"><Spinner size="lg" mx="auto" /></div> : posts.map((item,i,array) => <div key={i}><PostCard slug={item["slug"]} score={item["votes"]} chain={item["chain"]} title={item["title"]} date={parseInt(Date.now() - item["posted_at"]) / 1000 / 60 / 60 < 24 ? `${String(parseInt(Date.now() - item["posted_at"]) / 1000 / 60 / 60)} Hours Ago` : Math.floor(parseInt(Date.now() - item["posted_at"]) / 1000 / 60 / 60 / 24) == 1 ? `${String(Math.floor(parseInt(Date.now() - item["posted_at"]) / 1000 / 60 / 60 / 24))} Day Ago` : `${String(Math.floor(parseInt(Date.now() - item["posted_at"]) / 1000 / 60 / 60 / 24))} Days Ago`} description={String(item["body"]).substring(0, 230).trimEnd() + "..."} /></div>)}
+          {loading ? <div className="d-flex w-100 justify-content-center mt-4"><Spinner size="lg" mx="auto" /></div> : posts.map((item,i,array) => <div key={i}><PostCard slug={item["slug"]} alreadyVoted={supabase.auth.user() ? item["voted_by"] != null ? item["voted_by"].includes(String(supabase.auth.user().id)) : false : false} score={item["votes"]} chain={item["chain"]} title={item["title"]} date={parseInt(Date.now() - item["posted_at"]) / 1000 / 60 / 60 < 24 ? `${String(parseInt(Date.now() - item["posted_at"]) / 1000 / 60 / 60)} Hours Ago` : Math.floor(parseInt(Date.now() - item["posted_at"]) / 1000 / 60 / 60 / 24) == 1 ? `${String(Math.floor(parseInt(Date.now() - item["posted_at"]) / 1000 / 60 / 60 / 24))} Day Ago` : `${String(Math.floor(parseInt(Date.now() - item["posted_at"]) / 1000 / 60 / 60 / 24))} Days Ago`} description={String(item["body"]).substring(0, 230).trimEnd() + "..."} /></div>)}
         </div>
       </main>
+      <Footer />
     </div>
   )
 }

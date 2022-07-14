@@ -7,14 +7,79 @@ import {
   Button,
   Badge,
   Image,  
+  useToast
 } from "@chakra-ui/react";
-import { FaArrowDown, FaArrowUp, FaShare } from 'react-icons/fa'
+import { FaArrowUp, FaShare } from 'react-icons/fa'
 import useWindowSize from '../../components/getWindowSize.js';
+import Footer from '../../components/Footer.jsx';
 import { supabase } from '../../components/Supabase.js';
+import { useRouter } from "next/router";
+import { useEffect, useState } from 'react';
 
 export function Post({ post }) {
   const { width, height } = useWindowSize()
+  const toast = useToast()
+  const router = useRouter()
 
+  const [upvoted, setUpvoted] = useState(null)
+  const [upvotes, setUpvotes] = useState(null)
+
+  function sharePost() {
+    navigator.clipboard.writeText(`https://coinlookout.app/posts/${data["slug"]}`).then(function() {
+        toast({ 
+            title: "📋 Copied", 
+            description: "The post URL has been copied to your clipboard!", 
+            status: "success",
+            position: "top-end", 
+            duration: 7500, 
+            isClosable: true 
+        });
+    })
+  }
+
+  const voteUp = async () =>  {
+    const { data: initial, error } = await supabase
+    .from('posts')
+    .update({ votes: parseInt(parseInt(data["slug"]) + 1) })
+    .eq('slug', data["slug"])
+
+    if(initial && initial.length > 0){
+        setUpvotes(initial[0]["votes"])
+        let updatedArray = initial[0]["voted_by"] != null ? initial[0]["voted_by"].push(supabase.auth.user().id) : [supabase.auth.user().id]
+        const { data: final, error } = await supabase
+        .from('posts')
+        .update({ voted_by: updatedArray })
+        .eq('slug', data["slug"])
+        if(final){
+            toast({ title: "Upvoted 🎉", 
+            description: "The more upvotes a post has, the more people see it. Upvote your favorite projects!", 
+            status: "success",
+            position: "top-end", 
+            duration: 7500, 
+            isClosable: true });
+            setUpvoted(true)
+        } else if(error) {
+            toast({ title: "Whoops", 
+                description: String(error.message), 
+                status: "error",
+                position: "top-end", 
+                duration: 7500, 
+                isClosable: true }
+            );
+        }
+    }
+  }
+
+  useEffect( async () => {
+    const { data: initial, error } = await supabase
+    .from('posts')
+    .select("votes, voted_by")
+    .eq('slug', data["slug"])
+
+    setUpvotes(initial[0]["votes"])
+    setUpvoted(supabase.auth.user() ? initial[0]["voted_by"] != null ? initial[0]["voted_by"].includes(String(supabase.auth.user().id)) : false : false)
+  }, [])
+  
   const data = JSON.parse(post)
   return (
     <div>
@@ -28,7 +93,7 @@ export function Post({ post }) {
       </Head>
       <Header />
       <div className="container">
-      <Box width={728} height={90} display='flex' justifyContent={'center'} alignItems='center' border={'1px solid hsla(240,4%,46%,.3)'} className='mt-5 mx-auto'>Ad</Box>
+      <Box width={320} height={50} display='flex' justifyContent={'center'} alignItems='center' border={'1px solid hsla(240,4%,46%,.3)'}>Ad</Box>
       <main className="d-flex flex-xl-row flex-column mt-5 mb-4">
             <div className="col-xl-8 col-12 pr-xl-2 pr-0">
             <Box backgroundColor={'hsla(240,4%,46%,.2)'} borderRadius='7.5px' border='1px solid hsla(240,4%,46%,.3)'>
@@ -40,7 +105,7 @@ export function Post({ post }) {
                         <Heading mt={2} fontWeight={600} lineHeight={'150%'} fontSize='3xl'>
                             {data["title"]}
                         </Heading>
-                        <Text mt={2} opacity='0.75' display={'flex'} alignItems={'center'} fontSize={'md'} pb={4} borderBottom={'1px solid hsla(240,4%,46%,.3)'}><Text as="span" mr={2}>24th June, 2022</Text>&bull;<Badge fontSize={'md'} fontWeight={500} letterSpacing={'0.5px'} px={2} py={0} ml={2} borderRadius={'5px'} colorScheme={'yellow'}>{data["chain"]}</Badge></Text>
+                        <Text mt={2} opacity='0.75' display={'flex'} alignItems={'center'} fontSize={'md'} pb={4} borderBottom={'1px solid hsla(240,4%,46%,.3)'}><Text as="span" mr={2}>{new Date(parseInt(data["posted_at"])).toLocaleString('en-us',{day:'numeric', month:'long', year:'numeric'})}</Text>&bull;<Badge fontSize={'md'} fontWeight={500} letterSpacing={'0.5px'} px={2} py={0} ml={2} borderRadius={'5px'} colorScheme={data["chain"] == "BSC" ? 'yellow' : data["chain"] == "ETH" ? 'blue' : data["chain"] == "AVAX" ? 'red' : data["chain"] == "Polygon" ? 'purple' : null}>{data["chain"]}</Badge></Text>
                         <Text mt={4} whiteSpace='pre-wrap' color={'inherit'} lineHeight={'175%'} fontSize={'lg'}>
                             {data["body"]}
                         </Text>
@@ -50,10 +115,12 @@ export function Post({ post }) {
             </div>
             <Box mt={4} className="col-xl-4 col-12 mt-xl-0 pl-xl-2 pl-0 d-flex flex-column align-items-center">
                 <Box mb={4} backgroundColor={'hsla(240,4%,46%,.2)'} w='100%' borderRadius='7.5px' border='1px solid hsla(240,4%,46%,.3)' display='flex' flexDirection={'column'} alignItems={'center'}>
-                    <Box p={6} w='100%' display={'flex'} justifyContent='center' flexDirection='row'>
-                        <Button mr={6} leftIcon={<FaArrowUp />}>Vote</Button>
-                        <Button mr={6} leftIcon={<FaArrowDown />}>Vote</Button>
-                        <Button leftIcon={<FaShare />}>Share</Button>
+                    <Box p={6} borderTop='1px solid hsla(240,4%,46%,.3)' w='100%' display={'flex'} justifyContent='center' flexDirection='row'>
+                        <Text fontSize={'xl'} display={'flex'} letterSpacing='1.1px' fontWeight={'600'} justifyContent='center' flexDirection='row' alignItems={'center'}><FaArrowUp style={{ marginRight:'0.5rem' }} />{data["votes"]}</Text>
+                    </Box>
+                    <Box p={6} borderTop='1px solid hsla(240,4%,46%,.3)' w='100%' display={'flex'} justifyContent='center' flexDirection='row'>
+                        <Button disabled={supabase.auth.user() ? upvoted : false} pointerEvents={upvoted ? "none" : "auto"} onClick={() => {supabase.auth.user() ? upvoted ? null : voteUp() : toast({ title: "Please Sign In", description: "To vote for your favorite projects, please sign in here!", status: "warning", position: "top-end", duration: 7500, isClosable: true }); router.push("/sign-in"); }} mr={6} leftIcon={<FaArrowUp />}>Vote</Button>
+                        <Button leftIcon={<FaShare />} onClick={sharePost}>Share</Button>
                     </Box>
                 </Box>
                 <Box mb={4} backgroundColor={'hsla(240,4%,46%,.2)'} w='100%' borderRadius='7.5px' border='1px solid hsla(240,4%,46%,.3)' display='flex' flexDirection={'column'} alignItems={'center'}><Box width={300} height={250} display='flex' justifyContent={'center'} alignItems='center' border={'1px solid hsla(240,4%,46%,.3)'} className='my-4 mx-auto'>Ad</Box></Box>
@@ -61,6 +128,7 @@ export function Post({ post }) {
             </Box>
       </main>
       </div>
+      <Footer />
     </div>
   )
 }
@@ -81,7 +149,7 @@ export async function getServerSideProps(context) {
 
     context.res.setHeader(
         'Cache-Control',
-        'public, s-maxage=10000, stale-while-revalidate=10000'
+        'public, s-maxage=100000, stale-while-revalidate=100000'
     )
     
     return { props: { post } };
