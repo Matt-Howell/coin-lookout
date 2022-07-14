@@ -93,7 +93,7 @@ export function Post({ post }) {
       </Head>
       <Header />
       <div className="container">
-      <Box width={320} height={50} display='flex' justifyContent={'center'} alignItems='center' border={'1px solid hsla(240,4%,46%,.3)'}>Ad</Box>
+      <Box width={320} height={50} display='flex' justifyContent={'center'} alignItems='center' border={'1px solid hsla(240,4%,46%,.3)'} mx="auto">Ad</Box>
       <main className="d-flex flex-xl-row flex-column mt-5 mb-4">
             <div className="col-xl-8 col-12 pr-xl-2 pr-0">
             <Box backgroundColor={'hsla(240,4%,46%,.2)'} borderRadius='7.5px' border='1px solid hsla(240,4%,46%,.3)'>
