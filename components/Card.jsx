@@ -16,7 +16,7 @@ import {
   import { FaArrowUp, FaFlag, FaShare } from 'react-icons/fa'
   import { supabase } from './Supabase';
   
-  export default function postCard(props) {   
+  export default function PostCard(props) {   
     const toast = useToast()
     const router = useRouter()
     const [upvoted, setUpvoted] = useState(null)
