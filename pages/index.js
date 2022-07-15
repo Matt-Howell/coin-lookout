@@ -49,6 +49,7 @@ export default function Home() {
 
   const [loading, setLoading] = useState()
   const [posts, setPosts] = useState([])
+  const [imageContents, setImageContents] = useState("")
 
   useEffect( async () => {
     setLoading(true)
@@ -67,21 +68,24 @@ export default function Home() {
 
   async function uploadLogo() {
     setImageLogo(formInputFile.current.files[0].name)
-    setImageId(String(formInputFile.current.files[0].name)+"_"+Date.now())
+    setImageId(String(Date.now())+"_"+formInputFile.current.files[0].name)
 
     const options = {
       method: 'PUT',
       headers: {
-        AccessKey: '8013554c-b72f-4f8c-b145e743902f-13fb-4829',
+        AccessKey: '2a10768f-558b-4067-aaba68024571-abad-4027',
         'Content-Type': 'application/octet-stream'
-      }
+      },
+      body: formInputFile.current.files[0]
     };
-    
-    fetch(`https://storage.bunnycdn.com/coinlookout/post-images/${imageId}`, options)
+ 
+    fetch(`https://storage.bunnycdn.com/clookout/posts/${String(Date.now())+"_"+formInputFile.current.files[0].name}`, options)
       .then(response => response.json())
       .then(response => console.log(response))
       .catch(err => console.error(err));
+
   }
+  
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [imageLogo, setImageLogo] = useState("")
   const [imageId, setImageId] = useState("")
@@ -95,10 +99,6 @@ export default function Home() {
   const formInputFile = useRef()
   const toast = useToast();
   const { width, height } = useWindowSize();
-
-  function submitForm() {
-    console.log("submitted")
-  }
 
   useEffect(() => {
     let param = new URL(window.location.href).searchParams.get("transactionHash")
@@ -121,7 +121,6 @@ export default function Home() {
       <Head>
         <title>CoinLookout - Find New Gems, Share Your Token, and More!</title>
         <meta name="description" content="Find new gems in the market daily, share your token for all of our users to see, or check what's trending today - all on CoinLookout!" />
-        <meta name="keywords" content="pseudocode editor,pseudocode editor online,pseudo code editor software,write pseudocode editor,pseudocode text editor,download pseudo code editor,editor for pseudocode,pseudo code editor for mac,pseudocode editor free,pseudo code editor download free" />
         
         <meta name="twitter:title" content="CoinLookout - Find New Gems, Share Your Token, and More!" />
         <meta name="twitter:description" content="Find new gems in the market daily, share your token for all of our users to see, or check what's trending today - all on CoinLookout!" />
@@ -326,19 +325,19 @@ export default function Home() {
                   <input type="hidden" name="receivers[0]" value="0x96f06F35342db05C27Bc6426fD2B1402356aF34F" />
                   <input type="hidden" name="amounts[0]" value="1" />
                   <input type="hidden" name="category" value="Business" />
-                  <input type="hidden" name="webhook" value="http://localhost:4242/webhook" />
+                  <input type="hidden" name="webhook" value="https://coinlookout.org/webhook" />
                   <input type="hidden" name="extra[body]" value={JSON.stringify(postBody)} />
                   <input type="hidden" name="extra[chain]" value={String(chain)} />
                   <input type="hidden" name="extra[title]" value={String(title)} />
-                  <input type="hidden" name="extra[image]" value={String(imageId)} />
-                  <input type="hidden" name="callbackSuccess" value="http://localhost:3000/" />
-                  <input type="hidden" name="callbackError" value="http://localhost:3000/" />
+                  <input type="hidden" name="extra[image]" value={"https://cdn.coinlookout.app/posts/"+String(imageId)} />
+                  <input type="hidden" name="callbackSuccess" value="https://coinlookout.app/" />
+                  <input type="hidden" name="callbackError" value="https://coinlookout.app/" />
               </form>
                 </ModalBody>
                 <ModalFooter justifyContent={'space-between'}>
-                  {step == 0 ? <><Text fontSize={'lg'}><Text as="span" fontWeight={600}>Posting Fee:</Text> 15 BUSD</Text>
+                  {step == 0 ? <><Text fontSize={'lg'} display={'flex'} flexDirection={width > 576 ? 'row' : 'column'}><Text as="span" fontWeight={600}>Posting Fee:&nbsp;</Text><Text as="span">15 BUSD</Text></Text>
                   <Button variant='solid' form='postFormValidate' type='submit' colorScheme={'yellow'}>Continue</Button></> : <>
-                    <div className='d-flex flex-column'><div className="d-flex flex-row align-items-center justify-content-between"><Text fontSize={'lg'}><Text as="span" fontWeight={600}>Posting Fee:</Text> 15 BUSD</Text>
+                    <div className='d-flex flex-column'><div className="d-flex flex-row align-items-center justify-content-between"><Text fontSize={'lg'} display={'flex'} flexDirection={width > 576 ? 'row' : 'column'}><Text as="span" fontWeight={600}>Posting Fee:&nbsp;</Text><Text as="span"> 15 BUSD</Text></Text>
                     <Button className='pulsing' variant='solid' form='postForm' type="submit" colorScheme={'yellow'}>Pay and Post</Button></div>
                     <Alert status="warning" borderRadius={'0.375rem'} mt={4}><AlertDescription>If the &quot;Pay&quot; button on the next page is disabled, ensure you are using either <Link href="https://metamask.io/" color={'blue.300'} className="saveColor" rel="nofollow noreferrer">MetaMask</Link> or another connected wallet and you&apos;re <Link color={'blue.300'} className="saveColor" href="https://academy.binance.com/en/articles/connecting-metamask-to-binance-smart-chain" rel='nofollow noreferrer'>connected to Binance Smart Chain</Link>.</AlertDescription></Alert>
                     </div>

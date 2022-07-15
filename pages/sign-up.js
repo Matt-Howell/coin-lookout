@@ -94,17 +94,16 @@ export default function Home() {
   return (
     <div>
       <Head>
-        <title>CoinLookout - Find New Gems, Share Your Token, and More!</title>
-        <meta name="description" content="Find new gems in the market daily, share your token for all of our users to see, or check what's trending today - all on CoinLookout!" />
-        <meta name="keywords" content="pseudocode editor,pseudocode editor online,pseudo code editor software,write pseudocode editor,pseudocode text editor,download pseudo code editor,editor for pseudocode,pseudo code editor for mac,pseudocode editor free,pseudo code editor download free" />
+        <title>Sign Up - CoinLookout</title>
+        <meta name="description" content="Create a CoinLookout account to start voting for your favorite projects!" />
         
-        <meta name="twitter:title" content="CoinLookout - Find New Gems, Share Your Token, and More!" />
-        <meta name="twitter:description" content="Find new gems in the market daily, share your token for all of our users to see, or check what's trending today - all on CoinLookout!" />
+        <meta name="twitter:title" content="Sign Up - CoinLookout" />
+        <meta name="twitter:description" content="Create a CoinLookout account to start voting for your favorite projects!" />
         <meta name="twitter:image" content="/CL-512.png" />
         <meta name="twitter:card" content="summary_large_image" />
         
-        <meta property="og:title" content="CoinLookout - Find New Gems, Share Your Token, and More!" />
-        <meta property="og:description" content="Find new gems in the market daily, share your token for all of our users to see, or check what's trending today - all on CoinLookout!" />
+        <meta property="og:title" content="Sign Up - CoinLookout" />
+        <meta property="og:description" content="Create a CoinLookout account to start voting for your favorite projects!" />
         <meta property="og:image" content="/CL-512.png" />
 
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
@@ -119,7 +118,7 @@ export default function Home() {
         <meta name="msapplication-TileColor" content="#da532c" />
         <meta name="theme-color" content="#ffffff" />
 
-        <link rel="canonical" href="https://coinlookout.app/" />
+        <link rel="canonical" href="https://coinlookout.app/sign-up" />
 
         <meta charSet='utf-8' />
         <meta name="theme-color" content="#1A202C" />

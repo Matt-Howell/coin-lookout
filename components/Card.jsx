@@ -15,12 +15,14 @@ import {
   import { useState } from 'react';
   import { FaArrowUp, FaFlag, FaShare } from 'react-icons/fa'
   import { supabase } from './Supabase';
+  import useWindowSize from './getWindowSize';
   
   export default function PostCard(props) {   
     const toast = useToast()
     const router = useRouter()
     const [upvoted, setUpvoted] = useState(null)
     const [upvotes, setUpvotes] = useState(null)
+    const { width } = useWindowSize()
 
     function sharePost() {
         navigator.clipboard.writeText(`https://coinlookout.app/posts/${props.slug}`).then(function() {
@@ -81,8 +83,8 @@ import {
     }
 
     return (
-      <Box className='mb-4 d-flex flex-row w-100' backgroundColor={'hsla(240,4%,46%,.2)'} borderRadius='7.5px' border='1px solid hsla(240,4%,46%,.3)'>
-        <Box borderRadius='7.5px 0px 0px 7.5px' display={'flex'} justifyContent='center' flexDirection='column' backgroundColor={'hsla(240,4%,46%,.5)'} p={6}>
+      <Box className={`mb-4 d-flex ${width > 576 ? 'flex-row' : 'flex-column'} w-100`} backgroundColor={'hsla(240,4%,46%,.2)'} borderRadius='7.5px' border='1px solid hsla(240,4%,46%,.3)'>
+        <Box alignItems={width > 576 ? null : 'center'} borderRadius='7.5px 0px 0px 7.5px' display={'flex'} justifyContent='center' flexDirection='column' backgroundColor={'hsla(240,4%,46%,.5)'} p={6}>
            <Box display={'flex'} justifyContent='center' flexDirection='column' width={'fit-content'}>
             {supabase.auth.user() ? <IconButton icon={<FaArrowUp />} disabled={upvoted !== null ? upvoted : props.alreadyVoted} pointerEvents={upvoted !== null ? upvoted ?  "none" : "auto" : props.alreadyVoted ? "none" : "auto"} onClick={() => {props.alreadyVoted ? null : voteUp()}} /> : <IconButton icon={<FaArrowUp />} onClick={() => { toast({ title: "Please Sign In", description: "To vote for your favorite projects, please sign in here!", status: "warning", position: "top-end", duration: 7500, isClosable: true }); router.push("/sign-in"); }} />}
             <Text as="span" textAlign={'center'} fontWeight={600} fontSize='lg' my={3}>{upvotes !== null ? upvotes : props.score}</Text>
