@@ -40,12 +40,13 @@ export function Post({ post }) {
   const voteUp = async () =>  {
     const { data: initial, error } = await supabase
     .from('posts')
-    .update({ votes: parseInt(parseInt(data["slug"]) + 1) })
+    .update({ votes: parseInt(parseInt(data["votes"]) + 1) })
     .eq('slug', data["slug"])
 
     if(initial && initial.length > 0){
         setUpvotes(initial[0]["votes"])
-        let updatedArray = initial[0]["voted_by"] != null ? initial[0]["voted_by"].push(supabase.auth.user().id) : [supabase.auth.user().id]
+        initial[0]["voted_by"] !== null ? initial[0]["voted_by"].push(supabase.auth.user().id) : [supabase.auth.user().id]
+        let updatedArray = initial[0]["voted_by"]
         const { data: final, error } = await supabase
         .from('posts')
         .update({ voted_by: updatedArray })
@@ -58,6 +59,7 @@ export function Post({ post }) {
             duration: 7500, 
             isClosable: true });
             setUpvoted(true)
+            setUpvotes(final[0]["votes"])
         } else if(error) {
             toast({ title: "Whoops", 
                 description: String(error.message), 
@@ -119,7 +121,7 @@ export function Post({ post }) {
                         <Text fontSize={'xl'} display={'flex'} letterSpacing='1.1px' fontWeight={'600'} justifyContent='center' flexDirection='row' alignItems={'center'}><FaArrowUp style={{ marginRight:'0.5rem' }} />{data["votes"]}</Text>
                     </Box>
                     <Box p={6} borderTop='1px solid hsla(240,4%,46%,.3)' w='100%' display={'flex'} justifyContent='center' flexDirection='row'>
-                        <Button disabled={supabase.auth.user() ? upvoted : false} pointerEvents={upvoted ? "none" : "auto"} onClick={() => {supabase.auth.user() ? upvoted ? null : voteUp() : toast({ title: "Please Sign In", description: "To vote for your favorite projects, please sign in here!", status: "warning", position: "top-end", duration: 7500, isClosable: true }); router.push("/sign-in"); }} mr={6} leftIcon={<FaArrowUp />}>Vote</Button>
+                        {supabase.auth.user() ? <Button disabled={upvoted} pointerEvents={upvoted ? "none" : "auto"} onClick={() => {upvoted ? null : voteUp()}} mr={6} leftIcon={<FaArrowUp />}>Vote</Button> : <Button disabled={false} pointerEvents={"auto"} onClick={() => {toast({ title: "Please Sign In", description: "To vote for your favorite projects, please sign in here!", status: "warning", position: "top-end", duration: 7500, isClosable: true }); router.push("/sign-in") }} mr={6} leftIcon={<FaArrowUp />}>Vote</Button>}
                         <Button leftIcon={<FaShare />} onClick={sharePost}>Share</Button>
                     </Box>
                 </Box>

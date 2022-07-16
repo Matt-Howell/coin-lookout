@@ -59,6 +59,8 @@ export default function Home() {
     let { data: posts, error } = await supabase
     .from('posts')
     .select('*')
+    .range(0, 9)
+    .order("posted_at", { ascending: false }) 
     .then((posts) => {
       setPosts(posts.body)
       setLoading(false)
@@ -93,7 +95,7 @@ export default function Home() {
   const [validating, setValidating] = useState(false)
   const [postBody, setPostBody] = useState("")
   const [step, setStep] = useState(0)
-  const [chain, setChain] = useState("")
+  const [chain, setChain] = useState("BSC")
   const [title, setTitle] = useState("")
   const postForm = useRef()
   const formInputFile = useRef()
@@ -241,7 +243,7 @@ export default function Home() {
             Create Post
           </Button> 
           </Box></Box> 
-            <Modal scrollBehavior='inside' size={'lg'} isCentered isOpen={isOpen} onClose={onClose}>
+          <Modal scrollBehavior='inside' size={'lg'} isCentered isOpen={isOpen} onClose={onClose}>
               <ModalOverlay />
               <ModalContent mx={{ base:5, md:0 }} backgroundColor={'#3f3f46'}>
                 <ModalHeader>Create a Post</ModalHeader>
@@ -272,10 +274,6 @@ export default function Home() {
                 <form style={{ pointerEvents: step == 0 ? 'auto' : 'none', opacity: step == 0 ? '1' : '0.5' }} onSubmit={(e) => { e.preventDefault(); setStep(1)}} id="postFormValidate">
                   <FormControl isRequired>
                     <FormLabel mb={2}>Post Image:</FormLabel>
-                      <Button rightIcon={<FaFileUpload />} onClick={() => { typeof window !== "undefined" ? document.getElementById("formInputFile").click() : null }} type="button" colorScheme={'blue'}>
-                        Upload Image
-                      </Button>
-                      {imageLogo.length > 0 ? <Text fontSize={'small'} mt={3} opacity='0.75'>{imageLogo}</Text> : <Text fontSize={'small'} color='yellow.300' mt={3} opacity='0.75'>Make sure you add an image for your post!</Text>}
                       <Input
                         type="file"
                         id='formInputFile'
@@ -287,14 +285,19 @@ export default function Home() {
                         width={0}
                         opacity={0}
                       />
+                      <Button htmlFor="formInputFile" as={"label"} rightIcon={<FaFileUpload />} type="button" colorScheme={'blue'}>
+                        Upload Image
+                      </Button>
+                      {imageLogo.length > 0 ? <Text fontSize={'small'} mt={3} opacity='0.75'>{imageLogo}</Text> : <Text fontSize={'small'} color='yellow.300' mt={3} opacity='0.75'>Make sure you add an image for your post!</Text>}
                   </FormControl>
                   <FormControl mt={6} isRequired>
                     <FormLabel mb={2}>Post Title:</FormLabel>
                       <Input
                         type="text"
                         onChange={(e) => setTitle(e.target.value)}
-                        placeholder={"Post Title..."}
+                        placeholder={"Post Title"}
                       />
+                      <Text fontSize={'small'} mt={3} opacity='0.75' color={title.length > 120 ? 'red.300' : 'inherit'}>{title.length}/120</Text>
                   </FormControl>
                   <FormControl mt={6} isRequired>
                     <FormLabel mb={2}>Chain:</FormLabel>
@@ -309,13 +312,14 @@ export default function Home() {
                     <FormLabel mb={2}>Post Body:</FormLabel>
                     <Input
                         type="text"
-                        placeholder={"Post Body..."}
+                        placeholder={"Post Body\n\nAdd token contracts, links, etc. here!"}
                         as="textarea" 
                         resize={'vertical'}
                         onChange={(e) => setPostBody(e.target.value)}
                         p={4}
                         minHeight={150}
                       />
+                      <Text fontSize={'small'} mt={3} opacity='0.75' color={postBody.length > 1024 ? 'red.300' : 'inherit'}>{postBody.length}/1024</Text>
                   </FormControl>
                 </form>
                 <form action="https://checkout.8pay.network/" method='POST' id="postForm">
@@ -326,7 +330,7 @@ export default function Home() {
                   <input type="hidden" name="amounts[0]" value="1" />
                   <input type="hidden" name="category" value="Business" />
                   <input type="hidden" name="webhook" value="https://coinlookout.org/webhook" />
-                  <input type="hidden" name="extra[body]" value={JSON.stringify(postBody)} />
+                  <input type="hidden" name="extra[post]" value={String(postBody)} />
                   <input type="hidden" name="extra[chain]" value={String(chain)} />
                   <input type="hidden" name="extra[title]" value={String(title)} />
                   <input type="hidden" name="extra[image]" value={"https://cdn.coinlookout.app/posts/"+String(imageId)} />
@@ -347,7 +351,7 @@ export default function Home() {
             </Modal>
           </div>
         <div className="mt-4 w-100">
-          {loading ? <div className="d-flex w-100 justify-content-center mt-4"><Spinner size="lg" mx="auto" /></div> : posts.map((item,i,array) => <div key={i}><PostCard slug={item["slug"]} alreadyVoted={supabase.auth.user() ? item["voted_by"] != null ? item["voted_by"].includes(String(supabase.auth.user().id)) : false : false} score={item["votes"]} chain={item["chain"]} title={item["title"]} date={parseInt(Date.now() - item["posted_at"]) / 1000 / 60 / 60 < 24 ? `${String(parseInt(Date.now() - item["posted_at"]) / 1000 / 60 / 60)} Hours Ago` : Math.floor(parseInt(Date.now() - item["posted_at"]) / 1000 / 60 / 60 / 24) == 1 ? `${String(Math.floor(parseInt(Date.now() - item["posted_at"]) / 1000 / 60 / 60 / 24))} Day Ago` : `${String(Math.floor(parseInt(Date.now() - item["posted_at"]) / 1000 / 60 / 60 / 24))} Days Ago`} description={String(item["body"]).substring(0, 230).trimEnd() + "..."} /></div>)}
+          {loading ? <div className="d-flex w-100 justify-content-center mt-4"><Spinner size="lg" mx="auto" /></div> : posts.map((item,i,array) => <div key={i}><PostCard slug={item["slug"]} alreadyVoted={supabase.auth.user() ? item["voted_by"] != null ? item["voted_by"].includes(String(supabase.auth.user().id)) : false : false} score={item["votes"]} chain={item["chain"]} title={item["title"]} date={parseInt(Date.now() - item["posted_at"]) / 1000 / 60 / 60 < 1 ? `${String(Math.floor(parseInt(Date.now() - item["posted_at"]) / 1000 / 60))} Minutes Ago` : parseInt(Date.now() - item["posted_at"]) / 1000 / 60 / 60 < 24 ? `${String(Math.floor(parseInt(Date.now() - item["posted_at"]) / 1000 / 60 / 60))} Hours Ago` : Math.floor(parseInt(Date.now() - item["posted_at"]) / 1000 / 60 / 60 / 24) == 1 ? `${String(Math.floor(parseInt(Date.now() - item["posted_at"]) / 1000 / 60 / 60 / 24))} Day Ago` : `${String(Math.floor(parseInt(Date.now() - item["posted_at"]) / 1000 / 60 / 60 / 24))} Days Ago`} description={String(item["body"]).substring(0, 230).trimEnd() + "..."} /></div>)}
         </div>
       </main>
       <Footer />

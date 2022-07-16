@@ -29,12 +29,14 @@ import { AiOutlineMenu } from "react-icons/ai";
 import { FaPlusCircle, FaTelegram, FaTwitter, FaEnvelope, FaUserAlt } from "react-icons/fa";
 import { supabase } from "./Supabase.js";
 import { useRouter } from "next/router";
+import useWindowSize from "./getWindowSize.js";
 
 export default function Header() {
   const { toggleColorMode: toggleMode } = useColorMode();
   const text = useColorModeValue("dark", "light");
   const bg = useColorModeValue("#fafafa", "gray.800");
   const ref = React.useRef();
+  const { width } = useWindowSize();
   const toast = useToast()
   const [y, setY] = React.useState(0);
   const { height = 0 } = ref.current ? ref.current.getBoundingClientRect() : {};
@@ -140,6 +142,14 @@ export default function Header() {
       >
         Create Post
       </Button></Link>
+      <Link href={'#'}><Button
+        w="full"
+        variant="ghost"
+        
+        leftIcon={<FaTwitter />}
+      >
+        Twitter
+      </Button></Link>
       <Link href={'/contact'}><Button
         w="full"
         variant="ghost"
@@ -193,14 +203,14 @@ export default function Header() {
                 ml={{ base: "0", md: "3" }}
                 icon={<FaTelegram />}
               />
-              <IconButton
+              {width > 568 ? <IconButton
                 size="md"
                 fontSize="lg"
                 variant="ghost"
                 color="current"
                 ml={{ base: "0", md: "3" }}
                 icon={<FaTwitter />}
-              />
+              /> : null}
               <><Menu><MenuButton
                 as={IconButton}
                 id="btn1"
