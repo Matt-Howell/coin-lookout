@@ -22,6 +22,7 @@ import {
   ModalCloseButton,
   useDisclosure,
   Alert,
+  MenuDivider,
   AlertTitle,
   AlertDescription,
   UnorderedList,
@@ -35,7 +36,9 @@ import {
   Select,
   AlertIcon,
   Link,
-  Spinner
+  Spinner,
+  MenuItemOption,
+  MenuOptionGroup
 } from '@chakra-ui/react'
 import { FaArrowCircleUp, FaCheckCircle, FaClock, FaEye, FaFileUpload, FaFilter, FaPlusCircle, FaSearch } from 'react-icons/fa'
 import { useRef, useState, useEffect } from 'react'
@@ -65,8 +68,24 @@ export default function Home() {
       setPosts(posts.body)
       setLoading(false)
     })
-  }, [])
-  
+  }, [])  
+
+  async function setChains(chain) {
+    setLoading(true)
+
+    if (!supabase) return;
+
+    let { data: posts, error } = await supabase
+    .from('posts')
+    .select('*')
+    .eq("chain", chain)
+    .range(0, 9)
+    .order("posted_at", { ascending: false }) 
+    .then((posts) => {
+      setPosts(posts.body)
+      setLoading(false)
+    })
+  }
 
   async function uploadLogo() {
     setImageLogo(formInputFile.current.files[0].name)
@@ -236,7 +255,26 @@ export default function Home() {
             </InputGroup>
           </Box>
           <Box flex={2} flexDirection='row' display={'flex'}><Box className='mx-3' style={{ width:'fit-content' }}>
-            <IconButton icon={<FaFilter />} />
+            <Menu closeOnSelect={false}>
+              <MenuButton
+                as={IconButton}
+                className="noHover"
+                icon={<FaFilter />}
+              />
+              <MenuList minWidth='240px'>
+                <MenuOptionGroup defaultValue='new' title='View' type='radio'>
+                  <MenuItemOption className='noHover' value='new'>New</MenuItemOption>
+                  <MenuItemOption className='noHover' value='trending'>Trending</MenuItemOption>
+                </MenuOptionGroup>
+                <MenuDivider />
+                <MenuOptionGroup title='Chains' onChange={(e) => setChains(e)} type='checkbox'>
+                  <MenuItemOption className='noHover' value='BSC'>BSC</MenuItemOption>
+                  <MenuItemOption className='noHover' value='ETH'>ETH</MenuItemOption>
+                  <MenuItemOption className='noHover' value='AVAX'>AVAX</MenuItemOption>
+                  <MenuItemOption className='noHover' value='Polygon'>Polygon</MenuItemOption>
+                </MenuOptionGroup>
+              </MenuList>
+            </Menu>
           </Box>
           <Box>
           <Button id="Post" onClick={onOpen} leftIcon={<FaPlusCircle />} borderRadius={'50px'} colorScheme='blue'>
