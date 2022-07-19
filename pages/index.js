@@ -38,9 +38,10 @@ import {
   Link,
   Spinner,
   MenuItemOption,
-  MenuOptionGroup
+  MenuOptionGroup,
+  Skeleton
 } from '@chakra-ui/react'
-import { FaArrowCircleUp, FaCheckCircle, FaClock, FaEye, FaFileUpload, FaFilter, FaPlusCircle, FaSearch } from 'react-icons/fa'
+import { FaArrowCircleUp, FaCheckCircle, FaClock, FaEye, FaFileUpload, FaFilter, FaFire, FaPlusCircle, FaSearch } from 'react-icons/fa'
 import { useRef, useState, useEffect } from 'react'
 import useWindowSize from '../components/getWindowSize.js'
 import Confetti from 'react-confetti'
@@ -52,24 +53,49 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 export default function Home() {
 
   const [loading, setLoading] = useState()
+  const [loadingMenus, setLoadingMenus] = useState()
   const [unchanged, setUnchanged] = useState(false)
   const [viewState, setViewState] = useState("new")
   const [posts, setPosts] = useState([])
+  const [postsTrending, setPostsTrending] = useState([])
+  const [postsHighest, setPostsHighest] = useState([])
 
   useEffect( async () => {
     setLoading(true)
+    setLoadingMenus(true)
 
     if (!supabase) return;
 
-    let { data: posts, error } = await supabase
+    let { data: menuTrending, errorTrending } = await supabase
     .from('posts')
     .select('*')
-    .range(0, 9)
-    .order("posted_at", { ascending: false }) 
-    .then((posts) => {
-      setPosts(posts.body)
-      setLoading(false)
-      setUnchanged(false)
+    .range(0, 2)
+    .gte("posted_at", String(parseInt(Date.now()) - 259200000))
+    .order("votes", { ascending: false }) 
+    .then( async (posts) => {
+      setPostsTrending(posts.body)
+      console.log(posts.body)
+      let { data: menuHighest, errorHighest } = await supabase
+      .from('posts')
+      .select('*')
+      .range(0, 2)
+      .order("votes", { ascending: false }) 
+      .then( async (postsB) => {
+        setPostsHighest(postsB.body)
+        setLoadingMenus(false)
+        console.log(postsB.body)
+        let { data: postsC, error } = await supabase
+        .from('posts')
+        .select('*')
+        .range(0, 9)
+        .order("posted_at", { ascending: false }) 
+        .then((postsC) => {
+          setPosts(postsC.body)
+          setLoading(false)
+          setUnchanged(false)
+          console.log(postsC.body)
+        })
+      })
     })
   }, [])  
 
@@ -207,12 +233,10 @@ export default function Home() {
   const [imageLogo, setImageLogo] = useState("")
   const [imageId, setImageId] = useState("")
   const [confetti, setConfetti] = useState(false)
-  const [validating, setValidating] = useState(false)
   const [postBody, setPostBody] = useState("")
   const [step, setStep] = useState(0)
   const [chain, setChain] = useState("BSC")
   const [title, setTitle] = useState("")
-  const postForm = useRef()
   const formInputFile = useRef()
   const toast = useToast();
   const { width, height } = useWindowSize();
@@ -287,61 +311,37 @@ export default function Home() {
       <main className='container px-3 d-flex flex-column justify-content-center align-items-center py-5'>
         <Box width={320} height={50} display='flex' justifyContent={'center'} alignItems='center' border={'1px solid hsla(240,4%,46%,.3)'}>Ad</Box>
         <div className='d-flex flex-xl-row flex-column justify-content-xl-between mt-4 pt-5 w-100'>
-          <div className='col-xl-4 col-12 pr-xl-3 pr-0 mb-3 mb-xl-0'>
-            <Box p={6} w='100%' borderRadius='7.5px' border={'1px solid hsla(240,4%,46%,.3)'} backgroundColor={'hsla(240,4%,46%,.2)'}>
+        <div className='col-xl-4 col-12 pr-xl-3 pr-0 mb-3 mb-xl-0'>
+            <Skeleton minHeight={195} borderRadius={'7.5px'} isLoaded={!loadingMenus}><Box p={6} w='100%' borderRadius='7.5px' border={'1px solid hsla(240,4%,46%,.3)'} backgroundColor={'hsla(240,4%,46%,.2)'}>
               <Heading as="h2" fontSize={'xl'} fontWeight='500'>
                 🔥 Trending
               </Heading>
               <OrderedList className='mt-3 pl-0 ml-2' listStyleType={'none'}>
-                <ListItem fontSize={'large'} className="mb-2">
-                  <span className='d-flex flex-row w-100 mt-2 align-items-center justify-content-between'><div><span className='mr-3'>1</span><span className='mr-3'>Farm The Dip</span></div><div className='d-flex align-items-center'><ListIcon as={FaEye} fontSize='15px' /><span className='ml-1'>434</span></div></span>
-                </ListItem>
-                <ListItem fontSize={'large'} className="mb-2">
-                  <span className='d-flex flex-row w-100 mt-2 align-items-center justify-content-between'><div><span className='mr-3'>2</span><span className='mr-3'>Volcano Token</span></div><div className='d-flex align-items-center'><ListIcon as={FaEye} fontSize='15px' /><span className='ml-1'>234</span></div></span>
-                </ListItem>
-                <ListItem fontSize={'large'} className="mb-2">
-                <span className='d-flex flex-row w-100 mt-2 align-items-center justify-content-between'><div><span className='mr-3'>3</span><span className='mr-3'>Trident Token</span></div><div className='d-flex align-items-center'><ListIcon as={FaEye} fontSize='15px' /><span className='ml-1'>87</span></div></span>
-                </ListItem>
+                {postsTrending.length > 0 ? postsTrending.map((value, index, array) => <ListItem key={index} fontSize={'large'} className="mb-2"><span className='d-flex flex-row w-100 mt-2 align-items-center justify-content-between'><div><span className='mr-3'>{String(index + 1)}</span><span className='mr-3'><Link color={'blue.300'} href={`/posts/${value['slug']}`}>{String(value["title"]).substring(0, 11)}...</Link></span></div><div className='d-flex align-items-center'><ListIcon as={FaFire} fontSize='15px' /><span className='ml-1'>{value["votes"]}</span></div></span></ListItem>) : null}
               </OrderedList>
             </Box>
-          </div>
-          <div className='col-xl-4 col-12 pr-xl-3 pr-0 mb-3 mb-xl-0'>
+          </Skeleton></div>
+          <div className='col-xl-4 col-12 pr-xl-3 pr-0 mb-3 mb-xl-0'><Skeleton borderRadius={'7.5px'} isLoaded={!loadingMenus}>
             <Box p={6} w='100%' borderRadius='7.5px' border={'1px solid hsla(240,4%,46%,.3)'} backgroundColor={'hsla(240,4%,46%,.2)'}>
               <Heading as="h2" fontSize={'xl'} fontWeight='500'>
                 🔝 Most Upvoted
               </Heading>
               <OrderedList className='mt-3 pl-0 ml-2' listStyleType={'none'}>
-                <ListItem fontSize={'large'} className="mb-2">
-                  <span className='d-flex flex-row w-100 mt-2 align-items-center justify-content-between'><div><span className='mr-3'>1</span><span className='mr-3'>Farm The Dip</span></div><div className='d-flex align-items-center'><ListIcon as={FaArrowCircleUp} fontSize='15px' /><span className='ml-1'>434</span></div></span>
-                </ListItem>
-                <ListItem fontSize={'large'} className="mb-2">
-                  <span className='d-flex flex-row w-100 mt-2 align-items-center justify-content-between'><div><span className='mr-3'>2</span><span className='mr-3'>Volcano Token</span></div><div className='d-flex align-items-center'><ListIcon as={FaArrowCircleUp} fontSize='15px' /><span className='ml-1'>234</span></div></span>
-                </ListItem>
-                <ListItem fontSize={'large'} className="mb-2">
-                <span className='d-flex flex-row w-100 mt-2 align-items-center justify-content-between'><div><span className='mr-3'>3</span><span className='mr-3'>Trident Token</span></div><div className='d-flex align-items-center'><ListIcon as={FaArrowCircleUp} fontSize='15px' /><span className='ml-1'>87</span></div></span>
-                </ListItem>
+                {postsHighest.length > 0 ? postsHighest.map((value, index, array) => <ListItem key={index} fontSize={'large'} className="mb-2"><span className='d-flex flex-row w-100 mt-2 align-items-center justify-content-between'><div><span className='mr-3'>{String(index + 1)}</span><span className='mr-3'><Link color={'blue.300'} href={`/posts/${value['slug']}`}>{String(value["title"]).substring(0, 11)}...</Link></span></div><div className='d-flex align-items-center'><ListIcon as={FaArrowCircleUp} fontSize='15px' /><span className='ml-1'>{value["votes"]}</span></div></span></ListItem>) : null}
               </OrderedList>
             </Box>
-          </div>
-          <div className='col-xl-4 col-12 pr-0 mb-3 mb-xl-0'>
+          </Skeleton></div>
+          <div className='col-xl-4 col-12 pr-0 mb-3 mb-xl-0'><Skeleton borderRadius={'7.5px'} isLoaded={!loadingMenus}>
             <Box p={6} w='100%' borderRadius='7.5px' border={'1px solid hsla(240,4%,46%,.3)'} backgroundColor={'hsla(240,4%,46%,.2)'}>
               <Heading as="h2" fontSize={'xl'} fontWeight='500'>
                 🆕 New Posts
               </Heading>
               <OrderedList className='mt-3 pl-0 ml-2' listStyleType={'none'}>
-                <ListItem fontSize={'large'} className="mb-2">
-                  <span className='d-flex flex-row w-100 mt-2 align-items-center justify-content-between'><div><span className='mr-3'>1</span><span className='mr-3'>Farm The Dip</span></div><div className='d-flex align-items-center'><ListIcon as={FaClock} fontSize='15px' /><span className='ml-1'>15 Mins</span></div></span>
-                </ListItem>
-                <ListItem fontSize={'large'} className="mb-2">
-                  <span className='d-flex flex-row w-100 mt-2 align-items-center justify-content-between'><div><span className='mr-3'>2</span><span className='mr-3'>Volcano Token</span></div><div className='d-flex align-items-center'><ListIcon as={FaClock} fontSize='15px' /><span className='ml-1'>2 Hours</span></div></span>
-                </ListItem>
-                <ListItem fontSize={'large'} className="mb-2">
-                <span className='d-flex flex-row w-100 mt-2 align-items-center justify-content-between'><div><span className='mr-3'>3</span><span className='mr-3'>Trident Token</span></div><div className='d-flex align-items-center'><ListIcon as={FaClock} fontSize='15px' /><span className='ml-1'>9 Hours</span></div></span>
-                </ListItem>
+                {posts.length > 0 ? posts.slice(0, 3).map((value, index, array) => <ListItem key={index} fontSize={'large'} className="mb-2"><span className='d-flex flex-row w-100 mt-2 align-items-center justify-content-between'><div><span className='mr-3'>{String(index + 1)}</span><span className='mr-3'><Link color={'blue.300'} href={`/posts/${value['slug']}`}>{String(value["title"]).substring(0, 11)}...</Link></span></div><div className='d-flex align-items-center'><ListIcon as={FaClock} fontSize='15px' /><span className='ml-1'>{parseInt(Date.now() - value["posted_at"]) / 1000 / 60 / 60 < 1 ? `${String(Math.floor(parseInt(Date.now() - value["posted_at"]) / 1000 / 60))} Mins` : parseInt(Date.now() - value["posted_at"]) / 1000 / 60 / 60 < 24 ? `${String(Math.floor(parseInt(Date.now() - value["posted_at"]) / 1000 / 60 / 60))} Hours` : Math.floor(parseInt(Date.now() - value["posted_at"]) / 1000 / 60 / 60 / 24) == 1 ? `${String(Math.floor(parseInt(Date.now() - value["posted_at"]) / 1000 / 60 / 60 / 24))} Day` : `${String(Math.floor(parseInt(Date.now() - value["posted_at"]) / 1000 / 60 / 60 / 24))} Days`}</span></div></span></ListItem>) : null}
               </OrderedList>
             </Box>
+          </Skeleton></div>
           </div>
-        </div>
         <div className='w-100 mt-4 mb-4'><Divider height={0} orientation='horizontal' /></div>
         <div className='d-flex w-100 flex-row justify-content-start'>
           <Box flex={9}>
@@ -454,7 +454,7 @@ export default function Home() {
                   <input type="hidden" name="description" value="CoinLookout Post" />
                   <input type="hidden" name="token" value="BUSD" />
                   <input type="hidden" name="receivers[0]" value="0x96f06F35342db05C27Bc6426fD2B1402356aF34F" />
-                  <input type="hidden" name="amounts[0]" value="1" />
+                  <input type="hidden" name="amounts[0]" value="15" />
                   <input type="hidden" name="category" value="Business" />
                   <input type="hidden" name="webhook" value="https://coinlookout.org/webhook" />
                   <input type="hidden" name="extra[post]" value={String(postBody)} />
