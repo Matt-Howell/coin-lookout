@@ -45,8 +45,7 @@ export function Post({ post }) {
 
     if(initial && initial.length > 0){
         setUpvotes(initial[0]["votes"])
-        initial[0]["voted_by"] !== null ? initial[0]["voted_by"].push(supabase.auth.user().id) : [supabase.auth.user().id]
-        let updatedArray = initial[0]["voted_by"]
+        let updatedArray = initial[0]["voted_by"] !== null ? initial[0]["voted_by"].concat(supabase.auth.user().id) : [supabase.auth.user().id]
         const { data: final, error } = await supabase
         .from('posts')
         .update({ voted_by: updatedArray })
@@ -59,7 +58,6 @@ export function Post({ post }) {
             duration: 7500, 
             isClosable: true });
             setUpvoted(true)
-            setUpvotes(final[0]["votes"])
         } else if(error) {
             toast({ title: "Whoops", 
                 description: String(error.message), 
@@ -118,7 +116,7 @@ export function Post({ post }) {
             <Box mt={4} className="col-xl-4 col-12 mt-xl-0 pl-xl-2 pl-0 d-flex flex-column align-items-center">
                 <Box mb={4} backgroundColor={'hsla(240,4%,46%,.2)'} w='100%' borderRadius='7.5px' border='1px solid hsla(240,4%,46%,.3)' display='flex' flexDirection={'column'} alignItems={'center'}>
                     <Box p={6} borderTop='1px solid hsla(240,4%,46%,.3)' w='100%' display={'flex'} justifyContent='center' flexDirection='row'>
-                        <Text fontSize={'xl'} display={'flex'} letterSpacing='1.1px' fontWeight={'600'} justifyContent='center' flexDirection='row' alignItems={'center'}><FaArrowUp style={{ marginRight:'0.5rem' }} />{data["votes"]}</Text>
+                        <Text fontSize={'xl'} display={'flex'} letterSpacing='1.1px' fontWeight={'600'} justifyContent='center' flexDirection='row' alignItems={'center'}><FaArrowUp style={{ marginRight:'0.5rem' }} />{upvotes !== null ? upvotes : data["votes"]}</Text>
                     </Box>
                     <Box p={6} borderTop='1px solid hsla(240,4%,46%,.3)' w='100%' display={'flex'} justifyContent='center' flexDirection='row'>
                         {supabase.auth.user() ? <Button disabled={upvoted} pointerEvents={upvoted ? "none" : "auto"} onClick={() => {upvoted ? null : voteUp()}} mr={6} leftIcon={<FaArrowUp />}>Vote</Button> : <Button disabled={false} pointerEvents={"auto"} onClick={() => {toast({ title: "Please Sign In", description: "To vote for your favorite projects, please sign in here!", status: "warning", position: "top-end", duration: 7500, isClosable: true }); router.push("/sign-in") }} mr={6} leftIcon={<FaArrowUp />}>Vote</Button>}

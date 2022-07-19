@@ -47,12 +47,14 @@ import Confetti from 'react-confetti'
 import Footer from '../components/Footer.jsx'
 import PostCard from '../components/Card.jsx'
 import { supabase } from '../components/Supabase.js'
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 export default function Home() {
 
   const [loading, setLoading] = useState()
+  const [unchanged, setUnchanged] = useState(false)
+  const [viewState, setViewState] = useState("new")
   const [posts, setPosts] = useState([])
-  const [imageContents, setImageContents] = useState("")
 
   useEffect( async () => {
     setLoading(true)
@@ -67,10 +69,11 @@ export default function Home() {
     .then((posts) => {
       setPosts(posts.body)
       setLoading(false)
+      setUnchanged(false)
     })
   }, [])  
 
-  async function setChains(chain) {
+  async function recall() {
     setLoading(true)
 
     if (!supabase) return;
@@ -78,12 +81,105 @@ export default function Home() {
     let { data: posts, error } = await supabase
     .from('posts')
     .select('*')
-    .eq("chain", chain)
     .range(0, 9)
     .order("posted_at", { ascending: false }) 
     .then((posts) => {
       setPosts(posts.body)
       setLoading(false)
+      setUnchanged(false)
+    })
+  }
+
+  async function addData() {
+    if (!supabase) return;
+
+    if(viewState == "new"){
+      let { data: fetched, error } = await supabase
+      .from('posts')
+      .select('*')
+      .range(posts.length - 1, posts.length + 8)
+      .order("posted_at", { ascending: false }) 
+      .then((fetched) => {
+        let postsBefore = posts.length;
+        let newArray = []
+        for (let index = 0; index < fetched.body.length; index++) {
+          newArray.push(fetched.body[index])
+        }
+        setPosts(posts.concat(newArray))
+        let postsAfter = posts.length;
+        if (postsAfter == postsBefore) {
+          setUnchanged(true)
+        }
+      })
+    } else if(viewState == "trending"){
+      let { data: fetched, error } = await supabase
+      .from('posts')
+      .select('*')
+      .range(posts.length - 1, posts.length + 8)
+      .gte("posted_at", String(parseInt(Date.now()) - 259200000))
+      .order("votes", { ascending: false }) 
+      .then((fetched) => {
+        let postsBefore = posts.length;
+        let newArray = []
+        for (let index = 0; index < fetched.body.length; index++) {
+          newArray.push(fetched.body[index])
+        }
+        setPosts(posts.concat(newArray))
+        let postsAfter = posts.length;
+        if (postsAfter == postsBefore) {
+          setUnchanged(true)
+        }
+      })
+    }
+  }
+
+  async function setView(view) {
+    setLoading(true)
+    setViewState(view)
+
+    if (!supabase) return;
+
+    if(view == "trending"){
+      let { data: posts, error } = await supabase
+      .from('posts')
+      .select('*')
+      .gte("posted_at", String(parseInt(Date.now()) - 259200000))
+      .range(0, 9)
+      .order("votes", { ascending: false }) 
+      .then((posts) => {
+        setPosts(posts.body)
+        setLoading(false)
+        setUnchanged(false)
+      })
+    }
+    if(view == "new"){
+      let { data: posts, error } = await supabase
+      .from('posts')
+      .select('*')
+      .range(0, 9)
+      .order("posted_at", { ascending: false }) 
+      .then((posts) => {
+        setPosts(posts.body)
+        setLoading(false)
+        setUnchanged(false)
+      })
+    }
+  }
+
+  async function searchPosts(query){
+    console.log(query)
+    let { data: posts, error } = await supabase
+    .from('posts')
+    .select('*')
+    .textSearch("title", `'${query}' & '${String(query).toLowerCase()}'`)
+    .order("posted_at", { ascending: false }) 
+    .then((posts) => {
+      if(query == ""){
+        recall();
+      } else {
+        setPosts(posts.body)
+        console.log(posts.body)
+      }
     })
   }
 
@@ -250,7 +346,7 @@ export default function Home() {
         <div className='d-flex w-100 flex-row justify-content-start'>
           <Box flex={9}>
             <InputGroup w='100%'>
-              <Input placeholder='Search for a post...' />
+              <Input onChange={(e) => searchPosts(e.target.value)} placeholder='Search for a post...' />
               <InputRightElement><FaSearch /></InputRightElement>
             </InputGroup>
           </Box>
@@ -262,16 +358,9 @@ export default function Home() {
                 icon={<FaFilter />}
               />
               <MenuList minWidth='240px'>
-                <MenuOptionGroup defaultValue='new' title='View' type='radio'>
+                <MenuOptionGroup defaultValue='new' onChange={(e) => setView(e)} title='View' type='radio'>
                   <MenuItemOption className='noHover' value='new'>New</MenuItemOption>
                   <MenuItemOption className='noHover' value='trending'>Trending</MenuItemOption>
-                </MenuOptionGroup>
-                <MenuDivider />
-                <MenuOptionGroup title='Chains' onChange={(e) => setChains(e)} type='checkbox'>
-                  <MenuItemOption className='noHover' value='BSC'>BSC</MenuItemOption>
-                  <MenuItemOption className='noHover' value='ETH'>ETH</MenuItemOption>
-                  <MenuItemOption className='noHover' value='AVAX'>AVAX</MenuItemOption>
-                  <MenuItemOption className='noHover' value='Polygon'>Polygon</MenuItemOption>
                 </MenuOptionGroup>
               </MenuList>
             </Menu>
@@ -303,7 +392,7 @@ export default function Home() {
                         </ListItem>
                         <ListItem lineHeight={6} mt={2} fontSize='md'>
                           <ListIcon as={FaCheckCircle} mb={'3px'} color={'blue.200'} fontSize='md' mr={3} />
-                          Your listing will shared instantly in our Telegram group with over <Text as="span" fontWeight={600}>1,000 members</Text>!
+                          Your listing will shared instantly in our Telegram channel with <Text as="span" fontWeight={600}>active members</Text>!
                         </ListItem>
                       </UnorderedList>
                     </AlertDescription>
@@ -389,7 +478,21 @@ export default function Home() {
             </Modal>
           </div>
         <div className="mt-4 w-100">
-          {loading ? <div className="d-flex w-100 justify-content-center mt-4"><Spinner size="lg" mx="auto" /></div> : posts.map((item,i,array) => <div key={i}><PostCard slug={item["slug"]} alreadyVoted={supabase.auth.user() ? item["voted_by"] != null ? item["voted_by"].includes(String(supabase.auth.user().id)) : false : false} score={item["votes"]} chain={item["chain"]} title={item["title"]} date={parseInt(Date.now() - item["posted_at"]) / 1000 / 60 / 60 < 1 ? `${String(Math.floor(parseInt(Date.now() - item["posted_at"]) / 1000 / 60))} Minutes Ago` : parseInt(Date.now() - item["posted_at"]) / 1000 / 60 / 60 < 24 ? `${String(Math.floor(parseInt(Date.now() - item["posted_at"]) / 1000 / 60 / 60))} Hours Ago` : Math.floor(parseInt(Date.now() - item["posted_at"]) / 1000 / 60 / 60 / 24) == 1 ? `${String(Math.floor(parseInt(Date.now() - item["posted_at"]) / 1000 / 60 / 60 / 24))} Day Ago` : `${String(Math.floor(parseInt(Date.now() - item["posted_at"]) / 1000 / 60 / 60 / 24))} Days Ago`} description={String(item["body"]).substring(0, 230).trimEnd() + "..."} /></div>)}
+          {loading ? <div className="d-flex w-100 justify-content-center mt-4"><Spinner size="lg" mx="auto" /></div> : 
+          <InfiniteScroll
+          dataLength={posts.length}
+          next={addData}
+          hasMore={!unchanged}
+          className='scroller'
+          loader={posts.length > 0 ? <div className="d-flex w-100 justify-content-center mt-4"><Spinner size="lg" mx="auto" /></div> : null}
+          endMessage={
+            <p style={{ textAlign: 'center' }}>
+              <b>That's it! You scrolled to the end - check back later for more posts 🚀</b>
+            </p>
+          }
+        >
+          {posts.length > 0 ? posts.map((item,i,array) => <div key={i}><PostCard slug={item["slug"]} alreadyVoted={supabase.auth.user() ? item["voted_by"] != null ? item["voted_by"].includes(String(supabase.auth.user().id)) : false : false} score={item["votes"]} chain={item["chain"]} title={item["title"]} date={parseInt(Date.now() - item["posted_at"]) / 1000 / 60 / 60 < 1 ? `${String(Math.floor(parseInt(Date.now() - item["posted_at"]) / 1000 / 60))} Minutes Ago` : parseInt(Date.now() - item["posted_at"]) / 1000 / 60 / 60 < 24 ? `${String(Math.floor(parseInt(Date.now() - item["posted_at"]) / 1000 / 60 / 60))} Hours Ago` : Math.floor(parseInt(Date.now() - item["posted_at"]) / 1000 / 60 / 60 / 24) == 1 ? `${String(Math.floor(parseInt(Date.now() - item["posted_at"]) / 1000 / 60 / 60 / 24))} Day Ago` : `${String(Math.floor(parseInt(Date.now() - item["posted_at"]) / 1000 / 60 / 60 / 24))} Days Ago`} description={String(item["body"]).substring(0, 230).trimEnd() + "..."} /></div>) : <Text color={'red.300'} style={{ textAlign: 'center' }}><b>No posts found - check back later for more posts 🚀</b></Text>}
+        </InfiniteScroll>}
         </div>
       </main>
       <Footer />

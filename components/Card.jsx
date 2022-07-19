@@ -56,8 +56,7 @@ import {
 
         if(data && data.length > 0){
             setUpvotes(data[0]["votes"])
-            data[0]["voted_by"] !== null ? data[0]["voted_by"].push(supabase.auth.user().id) : [supabase.auth.user().id]
-            let updatedArray = data[0]["voted_by"]
+            let updatedArray = data[0]["voted_by"] !== null ? data[0]["voted_by"].concat(supabase.auth.user().id) : [supabase.auth.user().id]
             const { data: final, error } = await supabase
             .from('posts')
             .update({ voted_by: updatedArray})

@@ -84,3 +84,5 @@ body::-webkit-scrollbar{height:0px;width:0px;}
 .remainHover:hover{
   color: inherit!important;
 }
+
+.scroller::-webkit-scrollbar{height:0px;width:0px;}
