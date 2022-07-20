@@ -142,7 +142,6 @@ export default function Home() {
       .from('posts')
       .select('*')
       .range(posts.length - 1, posts.length + 8)
-      .gte("posted_at", String(parseInt(Date.now()) - 259200000))
       .order("votes", { ascending: false }) 
       .then((fetched) => {
         let postsBefore = posts.length;
@@ -169,7 +168,6 @@ export default function Home() {
       let { data: posts, error } = await supabase
       .from('posts')
       .select('*')
-      .gte("posted_at", String(parseInt(Date.now()) - 259200000))
       .range(0, 9)
       .order("votes", { ascending: false }) 
       .then((posts) => {
@@ -321,7 +319,7 @@ export default function Home() {
               </OrderedList>
             </Box>
           </Skeleton></div>
-          <div className='col-xl-4 col-12 pr-xl-3 pr-0 mb-3 mb-xl-0'><Skeleton borderRadius={'7.5px'} isLoaded={!loadingMenus}>
+          <div className='col-xl-4 col-12 pr-xl-3 pr-0 mb-3 mb-xl-0'><Skeleton minHeight={195} borderRadius={'7.5px'} isLoaded={!loadingMenus}>
             <Box p={6} w='100%' borderRadius='7.5px' border={'1px solid hsla(240,4%,46%,.3)'} backgroundColor={'hsla(240,4%,46%,.2)'}>
               <Heading as="h2" fontSize={'xl'} fontWeight='500'>
                 🔝 Most Upvoted
@@ -331,7 +329,7 @@ export default function Home() {
               </OrderedList>
             </Box>
           </Skeleton></div>
-          <div className='col-xl-4 col-12 pr-0 mb-3 mb-xl-0'><Skeleton borderRadius={'7.5px'} isLoaded={!loadingMenus}>
+          <div className='col-xl-4 col-12 pr-0 mb-3 mb-xl-0'><Skeleton minHeight={195} borderRadius={'7.5px'} isLoaded={!loadingMenus}>
             <Box p={6} w='100%' borderRadius='7.5px' border={'1px solid hsla(240,4%,46%,.3)'} backgroundColor={'hsla(240,4%,46%,.2)'}>
               <Heading as="h2" fontSize={'xl'} fontWeight='500'>
                 🆕 New Posts
@@ -487,13 +485,21 @@ export default function Home() {
           loader={posts.length > 0 ? <div className="d-flex w-100 justify-content-center mt-4"><Spinner size="lg" mx="auto" /></div> : null}
           endMessage={
             <p style={{ textAlign: 'center' }}>
-              <b>That's it! You scrolled to the end - check back later for more posts 🚀</b>
+              <b>That&apos;s it! You scrolled to the end - check back later for more posts 🚀</b>
             </p>
           }
         >
           {posts.length > 0 ? posts.map((item,i,array) => <div key={i}><PostCard slug={item["slug"]} alreadyVoted={supabase.auth.user() ? item["voted_by"] != null ? item["voted_by"].includes(String(supabase.auth.user().id)) : false : false} score={item["votes"]} chain={item["chain"]} title={item["title"]} date={parseInt(Date.now() - item["posted_at"]) / 1000 / 60 / 60 < 1 ? `${String(Math.floor(parseInt(Date.now() - item["posted_at"]) / 1000 / 60))} Minutes Ago` : parseInt(Date.now() - item["posted_at"]) / 1000 / 60 / 60 < 24 ? `${String(Math.floor(parseInt(Date.now() - item["posted_at"]) / 1000 / 60 / 60))} Hours Ago` : Math.floor(parseInt(Date.now() - item["posted_at"]) / 1000 / 60 / 60 / 24) == 1 ? `${String(Math.floor(parseInt(Date.now() - item["posted_at"]) / 1000 / 60 / 60 / 24))} Day Ago` : `${String(Math.floor(parseInt(Date.now() - item["posted_at"]) / 1000 / 60 / 60 / 24))} Days Ago`} description={String(item["body"]).substring(0, 230).trimEnd() + "..."} /></div>) : <Text color={'red.300'} style={{ textAlign: 'center' }}><b>No posts found - check back later for more posts 🚀</b></Text>}
         </InfiniteScroll>}
         </div>
+        <Alert status='warning' borderRadius={'0.375rem'} className='mt-5'>
+          <AlertIcon />
+          <strong>Warning:</strong>&nbsp;All listed tokens are not vetted by the CoinLookout team and not financial advice. Always do your own research.
+        </Alert>
+        <Alert status='info' borderRadius={'0.375rem'} fontSize='small' className='mt-3 d-flex align-items-start'>
+          <AlertIcon />
+          <AlertDescription><strong>Disclaimer:</strong>&nbsp;Disclaimer: All content provided herein our website, hyperlinked sites, associated applications, forums, blogs, social media accounts and other platforms (&quot;CoinLookout&quot;) is for your general information only, procured from third party sources. We make no warranties of any kind in relation to our content, including but not limited to accuracy and updatedness. No part of the content that we provide constitutes financial advice, legal advice or any other form of advice meant for your specific reliance for any purpose. Any use or reliance on our content is solely at your own risk and discretion. You should conduct your own research, review, analyse and verify our content before relying on them. Trading is a highly risky activity that can lead to major losses, please therefore consult your financial advisor before making any decision. No content on CoinLookout is meant to be a solicitation or offer.</AlertDescription>
+        </Alert>
       </main>
       <Footer />
     </div>
