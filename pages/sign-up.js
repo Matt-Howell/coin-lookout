@@ -1,30 +1,24 @@
 import Head from 'next/head'
 import Header from '../components/Header.jsx'
 import {
-  Container,
   Flex,
   Box,
   FormControl,
   FormLabel,
   Input,
-  Checkbox,
   Stack,
   Link,
   Button,
   Heading,
   Text,
   useColorModeValue,
-  Divider,
   useToast,
   InputRightElement,
   InputGroup,
-  Alert,
-  AlertIcon
 } from "@chakra-ui/react";
 import { useRouter } from 'next/router'
 import Footer from '../components/Footer.jsx'
-import { FaGithub, FaEye, FaEyeSlash } from 'react-icons/fa'
-import { FcGoogle } from 'react-icons/fc'
+import { FaEye, FaEyeSlash } from 'react-icons/fa'
 import { useRef, useState, useEffect } from 'react';
 import { supabase } from '../components/Supabase.js'
 

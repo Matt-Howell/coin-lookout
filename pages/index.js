@@ -22,12 +22,10 @@ import {
   ModalCloseButton,
   useDisclosure,
   Alert,
-  MenuDivider,
   AlertTitle,
   AlertDescription,
   UnorderedList,
   FormControl,
-  MenuItem,
   MenuList,
   MenuButton,
   Menu,
@@ -41,7 +39,7 @@ import {
   MenuOptionGroup,
   Skeleton
 } from '@chakra-ui/react'
-import { FaArrowCircleUp, FaCheckCircle, FaClock, FaEye, FaFileUpload, FaFilter, FaFire, FaPlusCircle, FaSearch } from 'react-icons/fa'
+import { FaArrowCircleUp, FaCheckCircle, FaClock, FaFileUpload, FaFilter, FaFire, FaPlusCircle, FaSearch } from 'react-icons/fa'
 import { useRef, useState, useEffect } from 'react'
 import useWindowSize from '../components/getWindowSize.js'
 import Confetti from 'react-confetti'
@@ -58,6 +56,7 @@ export default function Home() {
   const [viewState, setViewState] = useState("new")
   const [posts, setPosts] = useState([])
   const [postsTrending, setPostsTrending] = useState([])
+  const [postsNew, setPostsNew] = useState([])
   const [postsHighest, setPostsHighest] = useState([])
 
   useEffect( async () => {
@@ -74,30 +73,35 @@ export default function Home() {
     .order("votes", { ascending: false }) 
     .then( async (posts) => {
       setPostsTrending(posts.body)
-      console.log(posts.body)
       let { data: menuHighest, errorHighest } = await supabase
       .from('posts')
       .select('*')
       .range(0, 2)
-      .order("votes", { ascending: false }) 
+      .order("votes", { ascending: false })
       .then( async (postsB) => {
         setPostsHighest(postsB.body)
-        setLoadingMenus(false)
-        console.log(postsB.body)
-        let { data: postsC, error } = await supabase
+        let { data: menuNew, errorNew } = await supabase
         .from('posts')
         .select('*')
-        .range(0, 9)
+        .range(0, 2)
         .order("posted_at", { ascending: false }) 
-        .then((postsC) => {
-          setPosts(postsC.body)
-          setLoading(false)
-          setUnchanged(false)
-          console.log(postsC.body)
+        .then( async (postsC) => {
+          setPostsNew(postsC.body)
+          setLoadingMenus(false)
+          let { data: postsD, error } = await supabase
+          .from('posts')
+          .select('*')
+          .range(0, 9)
+          .order("posted_at", { ascending: false }) 
+          .then((postsD) => {
+            setPosts(postsD.body)
+            setLoading(false)
+            setUnchanged(false)
+          })
         })
-      })
-    })
-  }, [])  
+       })
+     })
+  }, [])
 
   async function recall() {
     setLoading(true)
@@ -309,7 +313,7 @@ export default function Home() {
         <Box width={320} height={50} display='flex' justifyContent={'center'} alignItems='center' border={'1px solid hsla(240,4%,46%,.3)'}>Ad</Box>
         <div className='d-flex flex-xl-row flex-column justify-content-xl-between mt-4 pt-5 w-100'>
         <div className='col-xl-4 col-12 pr-xl-3 pr-0 mb-3 mb-xl-0'>
-            <Skeleton minHeight={195} borderRadius={'7.5px'} isLoaded={!loadingMenus}><Box p={6} w='100%' borderRadius='7.5px' border={'1px solid hsla(240,4%,46%,.3)'} backgroundColor={'hsla(240,4%,46%,.2)'}>
+            <Skeleton minHeight={195} borderRadius={'7.5px'} isLoaded={!loadingMenus}><Box minHeight={195} p={6} w='100%' borderRadius='7.5px' border={'1px solid hsla(240,4%,46%,.3)'} backgroundColor={'hsla(240,4%,46%,.2)'}>
               <Heading as="h2" fontSize={'xl'} fontWeight='500'>
                 🔥 Trending
               </Heading>
@@ -319,7 +323,7 @@ export default function Home() {
             </Box>
           </Skeleton></div>
           <div className='col-xl-4 col-12 pr-xl-3 pr-0 mb-3 mb-xl-0'><Skeleton minHeight={195} borderRadius={'7.5px'} isLoaded={!loadingMenus}>
-            <Box p={6} w='100%' borderRadius='7.5px' border={'1px solid hsla(240,4%,46%,.3)'} backgroundColor={'hsla(240,4%,46%,.2)'}>
+            <Box minHeight={195} p={6} w='100%' borderRadius='7.5px' border={'1px solid hsla(240,4%,46%,.3)'} backgroundColor={'hsla(240,4%,46%,.2)'}>
               <Heading as="h2" fontSize={'xl'} fontWeight='500'>
                 🔝 Most Upvoted
               </Heading>
@@ -329,12 +333,12 @@ export default function Home() {
             </Box>
           </Skeleton></div>
           <div className='col-xl-4 col-12 pr-0 mb-3 mb-xl-0'><Skeleton minHeight={195} borderRadius={'7.5px'} isLoaded={!loadingMenus}>
-            <Box p={6} w='100%' borderRadius='7.5px' border={'1px solid hsla(240,4%,46%,.3)'} backgroundColor={'hsla(240,4%,46%,.2)'}>
+            <Box minHeight={195} p={6} w='100%' borderRadius='7.5px' border={'1px solid hsla(240,4%,46%,.3)'} backgroundColor={'hsla(240,4%,46%,.2)'}>
               <Heading as="h2" fontSize={'xl'} fontWeight='500'>
                 🆕 New Posts
               </Heading>
               <OrderedList className='mt-3 pl-0 ml-2' listStyleType={'none'}>
-                {posts.length > 0 ? posts.slice(0, 3).map((value, index, array) => <ListItem key={index} fontSize={'large'} className="mb-2"><span className='d-flex flex-row w-100 mt-2 align-items-center justify-content-between'><div><span className='mr-3'>{String(index + 1)}</span><span className='mr-3'><Link color={'blue.300'} href={`/posts/${value['slug']}`}>{String(value["title"]).substring(0, 11)}...</Link></span></div><div className='d-flex align-items-center'><ListIcon as={FaClock} fontSize='15px' /><span className='ml-1'>{parseInt(Date.now() - value["posted_at"]) / 1000 / 60 / 60 < 1 ? `${String(Math.floor(parseInt(Date.now() - value["posted_at"]) / 1000 / 60))} Mins` : parseInt(Date.now() - value["posted_at"]) / 1000 / 60 / 60 < 24 ? `${String(Math.floor(parseInt(Date.now() - value["posted_at"]) / 1000 / 60 / 60))} Hours` : Math.floor(parseInt(Date.now() - value["posted_at"]) / 1000 / 60 / 60 / 24) == 1 ? `${String(Math.floor(parseInt(Date.now() - value["posted_at"]) / 1000 / 60 / 60 / 24))} Day` : `${String(Math.floor(parseInt(Date.now() - value["posted_at"]) / 1000 / 60 / 60 / 24))} Days`}</span></div></span></ListItem>) : null}
+                {postsNew.length > 0 ? postsNew.map((value, index, array) => <ListItem key={index} fontSize={'large'} className="mb-2"><span className='d-flex flex-row w-100 mt-2 align-items-center justify-content-between'><div><span className='mr-3'>{String(index + 1)}</span><span className='mr-3'><Link color={'blue.300'} href={`/posts/${value['slug']}`}>{String(value["title"]).substring(0, 11)}...</Link></span></div><div className='d-flex align-items-center'><ListIcon as={FaClock} fontSize='15px' /><span className='ml-1'>{parseInt(Date.now() - value["posted_at"]) / 1000 / 60 / 60 < 1 ? `${String(Math.floor(parseInt(Date.now() - value["posted_at"]) / 1000 / 60))} Mins` : parseInt(Date.now() - value["posted_at"]) / 1000 / 60 / 60 < 24 ? `${String(Math.floor(parseInt(Date.now() - value["posted_at"]) / 1000 / 60 / 60))} Hours` : Math.floor(parseInt(Date.now() - value["posted_at"]) / 1000 / 60 / 60 / 24) == 1 ? `${String(Math.floor(parseInt(Date.now() - value["posted_at"]) / 1000 / 60 / 60 / 24))} Day` : `${String(Math.floor(parseInt(Date.now() - value["posted_at"]) / 1000 / 60 / 60 / 24))} Days`}</span></div></span></ListItem>) : null}
               </OrderedList>
             </Box>
           </Skeleton></div>
@@ -450,7 +454,7 @@ export default function Home() {
                   <input type="hidden" name="type" value="one_time" />
                   <input type="hidden" name="description" value="CoinLookout Post" />
                   <input type="hidden" name="token" value="BUSD" />
-                  <input type="hidden" name="receivers[0]" value="0x96f06F35342db05C27Bc6426fD2B1402356aF34F" />
+                  <input type="hidden" name="receivers[0]" value="0x81F3f5D43584676055c9924639bD60913Bd8B22e" />
                   <input type="hidden" name="amounts[0]" value="15" />
                   <input type="hidden" name="category" value="Business" />
                   <input type="hidden" name="webhook" value="https://coinlookout.org/webhook" />

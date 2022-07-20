@@ -127,7 +127,7 @@ export function Post({ post }) {
       </Head>
       <Header />
       <div className="container">
-      <Box width={320} height={50} display='flex' justifyContent={'center'} alignItems='center' border={'1px solid hsla(240,4%,46%,.3)'} mx="auto">Ad</Box>
+      <Box width={320} className="mt-5" height={50} display='flex' justifyContent={'center'} alignItems='center' border={'1px solid hsla(240,4%,46%,.3)'} mx="auto">Ad</Box>
       <main className="d-flex flex-xl-row flex-column mt-5 mb-4">
             <div className="col-xl-8 col-12 pr-xl-2 pr-0">
             <Box backgroundColor={'hsla(240,4%,46%,.2)'} borderRadius='7.5px' border='1px solid hsla(240,4%,46%,.3)'>
@@ -146,6 +146,7 @@ export function Post({ post }) {
                         </Box>
                 </Box>
             </Box>
+            <Box width={320} className="mt-5" mb={{ base:'2rem', lg:'1rem' }} height={50} display='flex' justifyContent={'center'} alignItems='center' border={'1px solid hsla(240,4%,46%,.3)'} mx="auto">Ad</Box>
             </div>
             <Box mt={4} className="col-xl-4 col-12 mt-xl-0 pl-xl-2 pl-0 d-flex flex-column align-items-center">
                 <Box mb={4} backgroundColor={'hsla(240,4%,46%,.2)'} w='100%' borderRadius='7.5px' border='1px solid hsla(240,4%,46%,.3)' display='flex' flexDirection={'column'} alignItems={'center'}>

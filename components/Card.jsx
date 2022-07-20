@@ -6,9 +6,6 @@ import {
     IconButton,
     Button,
     Link,
-    Menu,
-    MenuButton,
-    MenuList,
     useToast
   } from '@chakra-ui/react';
   import { useRouter } from 'next/router';

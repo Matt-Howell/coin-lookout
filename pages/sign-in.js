@@ -1,7 +1,6 @@
 import Head from 'next/head'
 import Header from '../components/Header.jsx'
 import {
-  Container,
   Flex,
   Box,
   FormControl,
@@ -14,17 +13,13 @@ import {
   Heading,
   Text,
   useColorModeValue,
-  Divider,
   useToast,
   InputRightElement,
   InputGroup,
-  Alert,
-  AlertIcon
 } from "@chakra-ui/react";
 import { useRouter } from 'next/router'
 import Footer from '../components/Footer.jsx'
-import { FaGithub, FaEye, FaEyeSlash } from 'react-icons/fa'
-import { FcGoogle } from 'react-icons/fc'
+import { FaEye, FaEyeSlash } from 'react-icons/fa'
 import { useRef, useState, useEffect } from 'react';
 import { supabase } from '../components/Supabase.js'
 
@@ -36,6 +31,21 @@ export default function Home() {
   const [show, setShow] = useState(false)
   const handleClick = () => setShow(!show)
   const toast = useToast()
+
+  useEffect(() => {
+    if (!supabase.auth.user()) return;
+    if (supabase.auth.user()) {
+      toast({
+        title: "Redirecting...",
+        description: "You are already signed in!",
+        status: "warning",
+        position: "top-end",
+        duration: 7500,
+        isClosable: true,
+      })
+      router.push('/')
+    }
+  }, [supabase.auth.user()])
   
   const signInEP = async () => {
     try {

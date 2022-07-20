@@ -3,9 +3,6 @@ import {
   chakra,
   HStack,
   Link,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
   Box,
   Flex,
   IconButton,
@@ -16,7 +13,6 @@ import {
   VStack,
   Button,
   useColorMode,
-  SimpleGrid,
   Menu,
   MenuButton,
   MenuList,
@@ -32,8 +28,6 @@ import { useRouter } from "next/router";
 import useWindowSize from "./getWindowSize.js";
 
 export default function Header() {
-  const { toggleColorMode: toggleMode } = useColorMode();
-  const text = useColorModeValue("dark", "light");
   const bg = useColorModeValue("#fafafa", "gray.800");
   const ref = React.useRef();
   const { width } = useWindowSize();
@@ -45,7 +39,6 @@ export default function Header() {
   React.useEffect(() => {
     return scrollY.onChange(() => setY(scrollY.get()));
   }, [scrollY]);
-  const cl = useColorModeValue("gray.800", "#fafafa");
   const mobileNav = useDisclosure();
 
   const router = useRouter();
@@ -142,7 +135,7 @@ export default function Header() {
       >
         Create Post
       </Button></Link>
-      <Link href={'#'}><Button
+      <Link href={'https://twitter.com/coinlookout'}><Button
         w="full"
         variant="ghost"
         
@@ -194,23 +187,22 @@ export default function Header() {
               </Link>
             </Flex>
             <Flex justify="flex-end" align="center" color="gray.400">
-              <IconButton
+              <Link href="https://t.me/coinlookout" className="remainHover"><IconButton
                 size="md"
                 fontSize="lg"
-                aria-label={`Switch to ${text} mode`}
                 variant="ghost"
                 color="current"
                 ml={{ base: "0", md: "3" }}
                 icon={<FaTelegram />}
-              />
-              {width > 568 ? <IconButton
+              /></Link>
+              {width > 568 ? <Link href="https://twitter.com/coinlookout" className="remainHover"><IconButton
                 size="md"
                 fontSize="lg"
                 variant="ghost"
                 color="current"
                 ml={{ base: "0", md: "3" }}
                 icon={<FaTwitter />}
-              /> : null}
+              /></Link> : null}
               <><Menu><MenuButton
                 as={IconButton}
                 id="btn1"

@@ -37,20 +37,20 @@ export default function LargeWithLogoLeft() {
           </Stack>
           <Stack align={'flex-start'}>
             <Text fontWeight={'500'} fontSize={'lg'} mb={2}>Get in Touch</Text>
-            <Link href={'https://t.me/coinlookout'}>Telegram</Link>
-            <Link href={'https://twitter.com/coinlookout'}>Twitter</Link>
-            <Link href={'/contact'}>Contact Us</Link>
+            <Link className='remainHover' href={'https://t.me/mattcoinlookout'}>Telegram</Link>
+            <Link className='remainHover' href={'https://twitter.com/coinlookout'}>Twitter</Link>
+            <Link className='remainHover' href={'/contact'}>Contact Us</Link>
           </Stack>
           <Stack align={'flex-start'}>
             <Text fontWeight={'500'} fontSize={'lg'} mb={2}>Community</Text>
-            <Link href={'https://t.me/coinlookoutalerts'}>Telegram Channel</Link>
-            <Link href={'https://t.me/coinlookout'}>Telegram Group</Link>
-            <Link href={'https://twitter.com/coinlookout'}>Twitter</Link>
+            <Link className='remainHover' href={'https://t.me/coinlookoutalerts'}>Telegram Channel</Link>
+            <Link className='remainHover' href={'https://t.me/coinlookout'}>Telegram Group</Link>
+            <Link className='remainHover' href={'https://twitter.com/coinlookout'}>Twitter</Link>
           </Stack>
           <Stack align={'flex-start'}>
             <Text fontWeight={'500'} fontSize={'lg'} mb={2}>Terms</Text>
-            <Link href={'/tos'}>Terms of Service</Link>
-            <Link href={'/privacy'}>Privacy Policy</Link>
+            <Link className='remainHover' href={'/tos'}>Terms of Service</Link>
+            <Link className='remainHover' href={'/privacy'}>Privacy Policy</Link>
           </Stack>
           <Stack align={'flex-start'}>
             <Text fontWeight={'500'} fontSize={'lg'} mb={2}>Disclaimers</Text>
