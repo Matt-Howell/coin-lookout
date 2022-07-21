@@ -1,4 +1,3 @@
-import Head from 'next/head'
 import Header from '../components/Header.jsx'
 import {
   Box, 
@@ -47,6 +46,7 @@ import Footer from '../components/Footer.jsx'
 import PostCard from '../components/Card.jsx'
 import { supabase } from '../components/Supabase.js'
 import InfiniteScroll from 'react-infinite-scroll-component';
+import Head from 'next/head'
 
 export default function Home() {
 
@@ -301,6 +301,18 @@ export default function Home() {
         <link rel="preconnect" href="https://fonts.googleapis.com"/>
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin/>
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet" />
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-193733109-8"></script>
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+          
+            gtag('config', 'UA-193733109-8');
+            `
+          }}
+        />
+
       </Head>
     <div>
       <Header />

@@ -1,8 +1,7 @@
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
   webpack: (config, { dev, isServer }) => {
-    if (!dev && !isServer) {
+    if (!isServer) {
       Object.assign(config.resolve.alias, {
         'react/jsx-runtime.js': 'preact/compat/jsx-runtime',
         react: 'preact/compat',
