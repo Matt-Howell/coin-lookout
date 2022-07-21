@@ -262,8 +262,19 @@ export default function Home() {
   return (
     <div>
       <Head>
-        <title>CoinLookout - Find New Gems, Share Your Token, and More!</title>
-        <meta name="description" content="Find new gems in the market daily, share your token for all of our users to see, or check what's trending today - all on CoinLookout!" />
+        <meta key={'charSet'} charSet='utf-8' />
+        <meta key={'theme'} name="theme-color" content="#1A202C" />
+        <meta key={'x-ua'} httpEquiv='x-ua-compatible' content='ie=edge' />
+        <meta key={'viewport'} name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no' />
+
+        <meta key={'robots'} name="robots" content="index, follow" />
+        <meta key={'googlebot'} name="googlebot" content="index, follow" />
+
+        <meta key={'mobile-web-app'} content="yes" name="apple-mobile-web-app-capable" />
+        <meta key={'mobile-web-app-style'} name="apple-mobile-web-app-status-bar-style" content="white-translucent" />
+
+        <title key={'title'}>CoinLookout - Find New Gems, Share Your Token, and More!</title>
+        <meta key={'desc'} name="description" content="Find new gems in the market daily, share your token for all of our users to see, or check what's trending today - all on CoinLookout!" />
         
         <meta key={'tt'} name="twitter:title" content="CoinLookout - Find New Gems, Share Your Token, and More!" />
         <meta key={'td'} name="twitter:description" content="Find new gems in the market daily, share your token for all of our users to see, or check what's trending today - all on CoinLookout!" />
@@ -287,21 +298,11 @@ export default function Home() {
 
         <link rel="canonical" key="canonical" href="https://coinlookout.app/" />
 
-        <meta key={'charSet'} charSet='utf-8' />
-        <meta key={'theme'} name="theme-color" content="#1A202C" />
-        <meta key={'x-ua'} httpEquiv='x-ua-compatible' content='ie=edge' />
-        <meta key={'viewport'} name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no' />
-
-        <meta key={'robots'} name="robots" content="index, follow" />
-        <meta key={'googlebot'} name="googlebot" content="index, follow" />
-
-        <meta key={'mobile-web-app'} content="yes" name="apple-mobile-web-app-capable" />
-        <meta key={'mobile-web-app-style'} name="apple-mobile-web-app-status-bar-style" content="white-translucent" />
-
         <link rel="preconnect" href="https://fonts.googleapis.com"/>
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin/>
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet" />
       </Head>
+    <div>
       <Header />
       {confetti ? <Confetti
           width={width}
@@ -505,6 +506,7 @@ export default function Home() {
         </Alert>
       </main>
       <Footer />
+      </div>
     </div>
   )
 }
