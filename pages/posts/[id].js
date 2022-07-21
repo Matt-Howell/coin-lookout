@@ -124,11 +124,22 @@ export function Post({ post }) {
         <link rel="preconnect" href="https://fonts.googleapis.com"/>
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin/>
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet" />
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-193733109-8"></script>
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+          
+            gtag('config', 'UA-193733109-8');
+            `
+          }}
+        />
       </Head>
       <Header />
       <div className="container pt-5">
-      {typeof window === 'undefined' || width>992 ? <iframe data-aa='2049277' src='//ad.a-ads.com/2049277?size=728x90' style={{ width:728, height:90, border:0, padding:0, overflow:'hidden', backgroundColor: 'transparent' }}></iframe> : null}
-      {typeof window === 'undefined' || width<992 ? <iframe data-aa='2049286' src='//ad.a-ads.com/2049286?size=300x250' style={{ width:300, height:250, border:0, padding:0, overflow:'hidden', backgroundColor: 'transparent' }}></iframe> : null}
+      <div className="d-flex flex-row justify-content-center w-100">{typeof window === 'undefined' || width>992 ? <iframe data-aa='2049277' src='//ad.a-ads.com/2049277?size=728x90' style={{ width:728, height:90, border:0, padding:0, overflow:'hidden', backgroundColor: 'transparent' }}></iframe> : null}</div>
+      <div className="d-flex flex-row justify-content-center w-100">{typeof window === 'undefined' || width<992 ? <iframe data-aa='2049286' src='//ad.a-ads.com/2049286?size=300x250' style={{ width:300, height:250, border:0, padding:0, overflow:'hidden', backgroundColor: 'transparent' }}></iframe> : null}</div>
       <main className="d-flex flex-xl-row flex-column mt-5 mb-4">
             <div className="col-xl-8 col-12 pr-xl-2 pr-0">
             <Box backgroundColor={'hsla(240,4%,46%,.2)'} borderRadius='7.5px' border='1px solid hsla(240,4%,46%,.3)'>
