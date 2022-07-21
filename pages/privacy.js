@@ -13,8 +13,8 @@ import Footer from '../components/Footer.jsx'
 
 export default function Home() {
   return (
-    <div>
-      <head>
+    <>
+      <Head>
         <title>Privacy - CoinLookout</title>
         <meta name="description" content="This Privacy Policy document contains types of information that is collected and recorded by CoinLookout." />
         
@@ -55,7 +55,7 @@ export default function Home() {
         <link rel="preconnect" href="https://fonts.googleapis.com"/>
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin/>
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet" />
-      </head>
+      </Head>
       <Header />
       <main className='container px-3 d-flex flex-column justify-content-center align-items-center py-0'>
       <Flex
@@ -85,6 +85,6 @@ export default function Home() {
       </Stack></Flex>
       </main>
       <Footer />
-    </div>
+    </>
   )
 }
