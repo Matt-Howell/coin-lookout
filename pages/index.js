@@ -322,7 +322,7 @@ export default function Home() {
         /> : null}
       <main className='container px-3 d-flex flex-column justify-content-center align-items-center py-5'>
         {typeof window === 'undefined' || width>992 ? <iframe data-aa='2049277' src='//ad.a-ads.com/2049277?size=728x90' style={{ width:728, height:90, border:0, padding:0, overflow:'hidden', backgroundColor: 'transparent' }}></iframe> : null}
-        <Box display={width<992?'flex':'none'}><iframe data-aa='2049286' src='//ad.a-ads.com/2049286?size=300x250' style={{ width:300, height:250, border:0, padding:0, overflow:'hidden', backgroundColor: 'transparent' }}></iframe></Box>
+        {typeof window === 'undefined' || width<992? <iframe data-aa='2049286' src='//ad.a-ads.com/2049286?size=300x250' style={{ width:300, height:250, border:0, padding:0, overflow:'hidden', backgroundColor: 'transparent' }}></iframe> : null}
         <div className='d-flex flex-xl-row flex-column justify-content-xl-between mt-4 pt-5 w-100'>
         <div className='col-xl-4 col-12 pr-xl-3 pr-0 mb-3 mb-xl-0'>
             <Skeleton minHeight={195} borderRadius={'7.5px'} isLoaded={!loadingMenus}><Box minHeight={195} p={6} w='100%' borderRadius='7.5px' border={'1px solid hsla(240,4%,46%,.3)'} backgroundColor={'hsla(240,4%,46%,.2)'}>
@@ -511,10 +511,11 @@ export default function Home() {
           <AlertIcon />
           <AlertDescription><strong>Warning:</strong>&nbsp;All listed posts are not vetted by the CoinLookout team and are not financial advice. Always do your own research.</AlertDescription>
         </Alert>
-        <Alert status='info' borderRadius={'0.375rem'} fontSize='small' className='mt-3 d-flex align-items-start'>
+        <Alert status='info' borderRadius={'0.375rem'} fontSize='small' className='mt-3 mb-5 d-flex align-items-start'>
           <AlertIcon />
           <AlertDescription><strong>Disclaimer:</strong>&nbsp;All content provided herein our website, hyperlinked sites, associated applications, forums, blogs, social media accounts and other platforms (&quot;CoinLookout&quot;) is for your general information only, procured from third party sources. We make no warranties of any kind in relation to our content, including but not limited to accuracy and updatedness. No part of the content that we provide constitutes financial advice, legal advice or any other form of advice meant for your specific reliance for any purpose. Any use or reliance on our content is solely at your own risk and discretion. You should conduct your own research, review, analyse and verify our content before relying on them. Trading is a highly risky activity that can lead to major losses, please therefore consult your financial advisor before making any decision. No content on CoinLookout is meant to be a solicitation or offer.</AlertDescription>
         </Alert>
+        {typeof window === 'undefined' || width>992? <iframe data-aa='2049286' src='//ad.a-ads.com/2049286?size=300x250' style={{ width:300, height:250, border:0, padding:0, overflow:'hidden', backgroundColor: 'transparent' }}></iframe> : null}
       </main>
       <Footer />
     </div>
