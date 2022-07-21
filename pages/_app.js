@@ -2,7 +2,7 @@ import '../styles/globals.css'
 import '../styles/bootstrap.css'
 import { ChakraProvider, extendTheme } from '@chakra-ui/react'
 
-function Cl({ Component, pageProps }) {
+function MainApp({ Component, pageProps }) {
   const config = {
     initialColorMode: "dark",
     styles: {
@@ -12,7 +12,7 @@ function Cl({ Component, pageProps }) {
         },
       }),
     }
-};
+  };
   
   const customTheme = extendTheme({ config })
 
@@ -23,4 +23,4 @@ function Cl({ Component, pageProps }) {
   )
 }
 
-export default Cl
+export default MainApp

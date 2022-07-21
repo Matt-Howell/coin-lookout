@@ -297,10 +297,6 @@ export default function Home() {
         <meta key={'TileColor'} name="msapplication-TileColor" content="#da532c" />
 
         <link rel="canonical" key="canonical" href="https://coinlookout.app/" />
-
-        <link rel="preconnect" href="https://fonts.googleapis.com"/>
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin/>
-        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet" />
       </Head>
     <div>
       <Header />
