@@ -262,41 +262,45 @@ export default function Home() {
   return (
     <div>
       <Head>
-        <meta key={'charSet'} charSet='utf-8' />
-        <meta key={'theme'} name="theme-color" content="#1A202C" />
-        <meta key={'x-ua'} httpEquiv='x-ua-compatible' content='ie=edge' />
-        <meta key={'viewport'} name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no' />
+        <meta charSet='utf-8' />
+        <meta name="theme-color" content="#1A202C" />
+        <meta httpEquiv='x-ua-compatible' content='ie=edge' />
+        <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no' />
 
-        <meta key={'robots'} name="robots" content="index, follow" />
-        <meta key={'googlebot'} name="googlebot" content="index, follow" />
+        <meta name="robots" content="index, follow" />
+        <meta name="googlebot" content="index, follow" />
 
-        <meta key={'mobile-web-app'} content="yes" name="apple-mobile-web-app-capable" />
-        <meta key={'mobile-web-app-style'} name="apple-mobile-web-app-status-bar-style" content="white-translucent" />
+        <meta content="yes" name="apple-mobile-web-app-capable" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="white-translucent" />
 
-        <title key={'title'}>CoinLookout - Find New Gems, Share Your Token, and More!</title>
-        <meta key={'desc'} name="description" content="Find new gems in the market daily, share your token for all of our users to see, or check what's trending today - all on CoinLookout!" />
+        <title>CoinLookout - Find New Gems, Share Your Token, and More!</title>
+        <meta name="description" content="Find new gems in the market daily, share your token for all of our users to see, or check what's trending today - all on CoinLookout!" />
         
-        <meta key={'tt'} name="twitter:title" content="CoinLookout - Find New Gems, Share Your Token, and More!" />
-        <meta key={'td'} name="twitter:description" content="Find new gems in the market daily, share your token for all of our users to see, or check what's trending today - all on CoinLookout!" />
-        <meta key={'ti'} name="twitter:image" content="/CL-512.png" />
-        <meta key={'tc'} name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="CoinLookout - Find New Gems, Share Your Token, and More!" />
+        <meta name="twitter:description" content="Find new gems in the market daily, share your token for all of our users to see, or check what's trending today - all on CoinLookout!" />
+        <meta name="twitter:image" content="/CL-512.png" />
+        <meta name="twitter:card" content="summary_large_image" />
         
-        <meta key={'ot'} property="og:title" content="CoinLookout - Find New Gems, Share Your Token, and More!" />
-        <meta key={'od'} property="og:description" content="Find new gems in the market daily, share your token for all of our users to see, or check what's trending today - all on CoinLookout!" />
-        <meta key={'og'} property="og:image" content="/CL-512.png" />
+        <meta property="og:title" content="CoinLookout - Find New Gems, Share Your Token, and More!" />
+        <meta property="og:description" content="Find new gems in the market daily, share your token for all of our users to see, or check what's trending today - all on CoinLookout!" />
+        <meta property="og:image" content="/CL-512.png" />
 
-        <link key={'touch'} rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         
-        <link key={'faviconi'} rel="icon" href="/favicon.ico" sizes="any" />
-        <link key={'favicons'} rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 
-        <meta key={'httpEquiv'} httpEquiv='Content-Type' content='text/html; charset=utf-8' />
-        <meta key={'locale'} property='og:locale' content='en_US' />
+        <meta httpEquiv='Content-Type' content='text/html; charset=utf-8' />
+        <meta property='og:locale' content='en_US' />
         
-        <link key={'manifest'} rel="manifest" href="/site.webmanifest" />
-        <meta key={'TileColor'} name="msapplication-TileColor" content="#da532c" />
+        <link rel="manifest" href="/site.webmanifest" />
+        <meta name="msapplication-TileColor" content="#da532c" />
 
-        <link rel="canonical" key="canonical" href="https://coinlookout.app/" />
+        <link rel="canonical" href="https://coinlookout.app/" />
+
+        <link rel="preconnect" href="https://fonts.googleapis.com"/>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin/>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet" />
       </Head>
     <div>
       <Header />
