@@ -1,5 +1,6 @@
 const nextConfig = {
   reactStrictMode: true,
+  swcMinify: true,
   webpack: (config, { dev, isServer }) => {
     if (!isServer) {
       Object.assign(config.resolve.alias, {

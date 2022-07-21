@@ -314,7 +314,6 @@ export default function Home() {
         />
 
       </Head>
-    <div>
       <Header />
       {confetti ? <Confetti
           width={width}
@@ -518,7 +517,6 @@ export default function Home() {
         </Alert>
       </main>
       <Footer />
-      </div>
     </div>
   )
 }
