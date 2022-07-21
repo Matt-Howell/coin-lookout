@@ -322,7 +322,8 @@ export default function Home() {
           height={height}
         /> : null}
       <main className='container px-3 d-flex flex-column justify-content-center align-items-center py-5'>
-        <Box width={320} height={50} display='flex' justifyContent={'center'} alignItems='center' border={'1px solid hsla(240,4%,46%,.3)'}>Ad</Box>
+        {typeof window === 'undefined' || width>992 ? <iframe data-aa='2049277' src='//ad.a-ads.com/2049277?size=728x90' style={{ width:728, height:90, border:0, padding:0, overflow:'hidden', backgroundColor: 'transparent' }}></iframe> : null}
+        {typeof window === 'undefined' || width<992 ? <iframe data-aa='2049286' src='//ad.a-ads.com/2049286?size=300x250' style={{ width:300, height:250, border:0, padding:0, overflow:'hidden', backgroundColor: 'transparent' }}></iframe> : null}
         <div className='d-flex flex-xl-row flex-column justify-content-xl-between mt-4 pt-5 w-100'>
         <div className='col-xl-4 col-12 pr-xl-3 pr-0 mb-3 mb-xl-0'>
             <Skeleton minHeight={195} borderRadius={'7.5px'} isLoaded={!loadingMenus}><Box minHeight={195} p={6} w='100%' borderRadius='7.5px' border={'1px solid hsla(240,4%,46%,.3)'} backgroundColor={'hsla(240,4%,46%,.2)'}>
