@@ -37,10 +37,12 @@ export function Post({ post }) {
     })
   }
 
+
+
   const voteUp = async () =>  {
     const { data: initial, error } = await supabase
     .from('posts')
-    .update({ votes: parseInt(parseInt(data["votes"]) + 1) })
+    .update({ votes: parseInt(parseInt(upvotes) + 1) })
     .eq('slug', data["slug"])
 
     if(initial && initial.length > 0){
