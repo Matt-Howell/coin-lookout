@@ -22,12 +22,14 @@ import Footer from '../components/Footer.jsx'
 import { FaEye, FaEyeSlash } from 'react-icons/fa'
 import { useRef, useState, useEffect } from 'react';
 import { supabase } from '../components/Supabase.js'
+import useWindowSize from '../components/getWindowSize.js';
 
 export default function Home() {
   const userEmail = useRef('')
   const userPass = useRef('')
   const rememberMe = useRef('')
   const router = useRouter()
+  const {width} = useWindowSize()
   const [show, setShow] = useState(false)
   const handleClick = () => setShow(!show)
   const toast = useToast()
@@ -135,6 +137,8 @@ export default function Home() {
       </Head>
       <Header />
       <main className='container px-3 d-flex flex-column justify-content-center align-items-center py-5'>
+      {typeof window === 'undefined' || width>992 ? <iframe data-aa='2049277' src='//ad.a-ads.com/2049277?size=728x90' style={{ width:728, height:90, border:0, padding:0, overflow:'hidden', backgroundColor: 'transparent' }}></iframe> : null}
+      {typeof window === 'undefined' || width<992? <iframe data-aa='2049286' src='//ad.a-ads.com/2049286?size=300x250' style={{ width:300, height:250, border:0, padding:0, overflow:'hidden', backgroundColor: 'transparent' }}></iframe> : null}
       <Flex
       align={'center'}
       maxW="650px"
