@@ -65,13 +65,12 @@ export default function Home() {
       if (!error) {
         toast({
           title: "Account Created!",
-          description: "Please sign into your new account here to start voting!",
+          description: "You are now signed into your account and can vote for posts!",
           status: "success",
           position: "top-end",
           duration: 7500,
           isClosable: true,
         })
-        router.push("/sign-in")
       }
       if (error) {
         toast({
